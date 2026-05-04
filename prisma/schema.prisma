@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  image        String?
+  googleId     String?   @unique
+  accessToken  String?
+  refreshToken String?
+  tokenExpiry  DateTime?
+  isActive     Boolean   @default(false)
+  holdLabelId  String?
+  historyId    String?
+  watchExpiry  DateTime?
+  createdAt    DateTime  @default(now())
+
+  settings     Settings?
+  schedules    Schedule[]
+  vipRules     VipRule[]
+  activityLogs ActivityLog[]
+}
+
+model Settings {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scheduleType        String   @default("custom_weekly")
+  intervalHours       Int?
+  timesPerDay         Int?
+  dndEnabled          Boolean  @default(false)
+  dndFrom             String?
+  dndTo               String?
+  updatedAt           DateTime @updatedAt
+}
+
+model Schedule {
+  id        String @id @default(cuid())
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayOfWeek Int
+  time      String
+}
+
+// VipRule.type is one of: DOMAIN | EMAIL | KEYWORD
+model VipRule {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type   String
+  value  String
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveredAt DateTime @default(now())
+  emailCount  Int
+  slotTime    String?
+}
