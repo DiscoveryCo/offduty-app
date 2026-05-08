@@ -30,10 +30,11 @@ app.prepare().then(() => {
     }
   })
 
+  const port = parseInt(process.env.PORT ?? "3000", 10)
   createServer((req, res) => {
     const parsedUrl = parse(req.url!, true)
     handle(req, res, parsedUrl)
-  }).listen(3000, () => {
-    console.log("> DiscoveryMail ready on http://localhost:3000")
+  }).listen(port, () => {
+    console.log(`> DiscoveryMail ready on http://localhost:${port}`)
   })
 })

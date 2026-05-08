@@ -4,11 +4,11 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import Image from "next/image"
 import { Mail, Settings } from "lucide-react"
-import { WaveIcon } from "@/components/WaveIcon"
 import { DashboardActions } from "@/components/DashboardClient"
 import { UserMenu } from "@/components/UserMenu"
 import { getGmailClient, ensureHoldLabel, getHeldCount } from "@/lib/gmail"
 import { ActivityPagination } from "@/components/ActivityPagination"
+import { HeldEmailsCard } from "@/components/HeldEmailsCard"
 import { formatDistanceToNow, format } from "date-fns"
 import { Suspense } from "react"
 
@@ -126,21 +126,7 @@ async function DashboardContent({ page }: { page: number }) {
           </Link>
         </div>
 
-        <div className="bg-[#242740] rounded-xl p-5">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
-            Held Emails
-          </p>
-          {user.isActive ? (
-            <p className="text-sm text-slate-300 leading-relaxed">
-              <strong className="text-white text-2xl">{heldCount}</strong>{" "}
-              {heldCount === 1 ? "email is" : "emails are"} currently held back from your inbox.
-            </p>
-          ) : (
-            <p className="text-sm text-slate-500">
-              DiscoveryMail is off. Start it to begin holding emails.
-            </p>
-          )}
-        </div>
+        <HeldEmailsCard heldCount={heldCount} isActive={user.isActive} />
 
       </div>
 
@@ -158,26 +144,22 @@ async function DashboardContent({ page }: { page: number }) {
             <thead>
               <tr className="border-b border-white/10 text-slate-400 text-xs uppercase tracking-widest">
                 <th className="text-left px-5 py-3 font-medium w-48">Date</th>
-                <th className="text-left px-5 py-3 font-medium">Slot</th>
                 <th className="text-right px-5 py-3 font-medium">Emails Processed</th>
               </tr>
             </thead>
             <tbody>
               {user.activityLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-5 py-10 text-center text-slate-500">
+                  <td colSpan={2} className="px-5 py-10 text-center text-slate-500">
                     No deliveries yet. Start DiscoveryMail to begin batching your inbox.
                   </td>
                 </tr>
               ) : (
                 user.activityLogs.map((log) => (
                   <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 text-slate-300">{formatDate(log.deliveredAt)}</td>
                     <td className="px-5 py-3">
-                      <div className="flex items-center gap-2">
-                        <WaveIcon />
-                        <span className="text-slate-300">{log.slotTime ?? "—"}</span>
-                      </div>
+                      <p className="text-slate-300">{formatDate(log.deliveredAt)}</p>
+                      {log.slotTime && <p className="text-slate-500 text-xs mt-0.5">{log.slotTime}</p>}
                     </td>
                     <td className="px-5 py-3 text-right text-white font-medium">{log.emailCount}</td>
                   </tr>

@@ -1,0 +1,7 @@
+node_modules
+.next
+lib/generated
+data
+*.db
+.git
+.env.local

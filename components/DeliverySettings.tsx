@@ -176,10 +176,10 @@ export function DeliverySettings({
       {/* Schedule type selector */}
       <div className="space-y-3">
         {/* Option: interval */}
-        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "interval" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`}>
+        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "interval" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`} onClick={() => setScheduleType("interval")}>
           <div className="flex items-start gap-3">
             <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "interval" ? "border-[#7c7cf8] bg-[#7c7cf8]" : "border-gray-300"}`} />
-            <div className="flex-1" onClick={() => setScheduleType("interval")}>
+            <div className="flex-1">
               <p className="font-medium text-gray-900 text-sm">Hours of interval</p>
               <p className="text-xs text-gray-500">eg. deliver emails every 4 hours in a day</p>
             </div>
@@ -199,10 +199,10 @@ export function DeliverySettings({
         </label>
 
         {/* Option: times */}
-        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "times" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`}>
+        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "times" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`} onClick={() => setScheduleType("times")}>
           <div className="flex items-start gap-3">
             <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "times" ? "border-[#7c7cf8] bg-[#7c7cf8]" : "border-gray-300"}`} />
-            <div className="flex-1" onClick={() => setScheduleType("times")}>
+            <div className="flex-1">
               <p className="font-medium text-gray-900 text-sm">Number of times</p>
               <p className="text-xs text-gray-500">eg. send me emails 3 times in a day at equal intervals</p>
             </div>

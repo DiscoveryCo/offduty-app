@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: "3002"
+      DATABASE_URL: "file:./data/dev.db"
+    env_file:
+      - .env.local
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
