@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/db"
-import { getGmailClient, releaseEmails } from "@/lib/gmail"
+import { getGmailClient, releaseEmails, stopWatch } from "@/lib/gmail"
 import Stripe from "stripe"
 
 export const runtime = "nodejs"
@@ -76,29 +76,30 @@ async function handleSubscriptionChange(sub: Stripe.Subscription) {
 async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
   const customerId = sub.customer as string
 
-  await prisma.user.updateMany({
-    where: { stripeCustomerId: customerId },
-    data: { subscriptionStatus: "canceled", currentPeriodEnd: null },
-  })
-
-  // Release all held emails for this user's inboxes
   const user = await prisma.user.findFirst({
     where: { stripeCustomerId: customerId },
     include: { inboxes: true },
   })
   if (!user) return
 
-  for (const inbox of user.inboxes) {
-    try {
-      const gmail = await getGmailClient(inbox)
-      if (inbox.holdLabelId) await releaseEmails(gmail, inbox.holdLabelId)
-      // Deactivate the inbox
-      await prisma.inbox.update({
-        where: { id: inbox.id },
-        data: { isActive: false },
-      })
-    } catch {
-      // non-fatal
-    }
-  }
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { subscriptionStatus: "canceled" },
+  })
+
+  await Promise.allSettled(
+    user.inboxes.map(async (inbox) => {
+      try {
+        const gmail = await getGmailClient(inbox)
+        if (inbox.holdLabelId) await releaseEmails(gmail, inbox.holdLabelId)
+        await stopWatch(gmail)
+        await prisma.inbox.update({
+          where: { id: inbox.id },
+          data: { isActive: false },
+        })
+      } catch {
+        // non-fatal — best effort per inbox
+      }
+    })
+  )
 }

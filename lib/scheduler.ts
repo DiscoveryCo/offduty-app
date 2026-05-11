@@ -3,6 +3,7 @@ import { getGmailClient, ensureHoldLabel, releaseEmails, stopWatch, registerWatc
 
 export function isAllowedToHold(user: { subscriptionStatus: string; trialEndsAt: Date | null }): boolean {
   if (user.subscriptionStatus === "active") return true
+  if (user.subscriptionStatus === "past_due") return true // Stripe retries payment — keep access until subscription.deleted fires
   if (user.subscriptionStatus === "trialing" && user.trialEndsAt && user.trialEndsAt > new Date()) return true
   return false
 }
