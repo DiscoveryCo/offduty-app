@@ -6,21 +6,24 @@ import { Mail, ArrowLeft } from "lucide-react"
 import { VipSettings } from "@/components/VipSettings"
 import { DeliverySettings } from "@/components/DeliverySettings"
 import { UserMenu } from "@/components/UserMenu"
+import { InboxSwitcher } from "@/components/InboxSwitcher"
+import { Suspense } from "react"
 
-
-export default async function SettingsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ tab?: string; inbox?: string }>
-}) {
+async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string }) {
   const session = await auth()
   if (!session?.user?.email) redirect("/login")
 
-  const params = await searchParams
-  const activeTab = params.tab === "delivery" ? "delivery" : "vip"
-  const inboxId = params.inbox
+  const activeTab = tab === "delivery" ? "delivery" : "vip"
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: {
+      inboxes: {
+        orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+        select: { id: true, email: true, image: true },
+      },
+    },
+  })
   if (!user) redirect("/login")
 
   const inbox = inboxId
@@ -60,16 +63,25 @@ export default async function SettingsPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4">
-        <Link href={dashboardHref} className="text-gray-400 hover:text-gray-600">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <Link href={dashboardHref} className="flex items-center gap-2 hover:opacity-75 transition-opacity">
-          <Mail className="w-5 h-5 text-[#7c7cf8]" />
-          <span className="font-bold text-lg tracking-tight text-gray-900">DiscoveryMail</span>
-        </Link>
-        <div className="ml-auto">
-          <UserMenu email={user.email} image={user.image ?? null} settingsHref={`/settings?inbox=${fullInbox.id}`} />
+      <header className="bg-white border-b border-gray-200 px-6 py-3 grid grid-cols-3 items-center">
+        <div className="flex items-center gap-3">
+          <Link href={dashboardHref} className="text-gray-400 hover:text-gray-600">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <Link href={dashboardHref} className="flex items-center gap-2 hover:opacity-75 transition-opacity">
+            <Mail className="w-5 h-5 text-[#7c7cf8]" />
+            <span className="font-bold text-lg tracking-tight text-gray-900">DiscoveryMail</span>
+          </Link>
+        </div>
+        <div className="flex justify-center">
+          <InboxSwitcher
+            inboxes={user.inboxes}
+            currentInboxId={fullInbox.id}
+            hrefPrefix={`/settings?tab=${activeTab}&inbox=`}
+          />
+        </div>
+        <div className="flex justify-end">
+          <UserMenu email={user.email} image={user.image ?? null} settingsHref={`/settings?inbox=${fullInbox.id}`} dashboardHref={`/dashboard?inbox=${fullInbox.id}`} />
         </div>
       </header>
 
@@ -129,5 +141,18 @@ export default async function SettingsPage({
         </div>
       </footer>
     </div>
+  )
+}
+
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; inbox?: string }>
+}) {
+  const params = await searchParams
+  return (
+    <Suspense>
+      <SettingsContent tab={params.tab ?? "vip"} inboxId={params.inbox} />
+    </Suspense>
   )
 }

@@ -3,18 +3,21 @@
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronDown, Check, PlusCircle } from "lucide-react"
+import Image from "next/image"
 
 interface Inbox {
   id: string
   email: string
+  image: string | null
 }
 
 interface Props {
   inboxes: Inbox[]
   currentInboxId: string
+  hrefPrefix?: string
 }
 
-export function InboxSwitcher({ inboxes, currentInboxId }: Props) {
+export function InboxSwitcher({ inboxes, currentInboxId, hrefPrefix = "/dashboard?inbox=" }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -31,7 +34,7 @@ export function InboxSwitcher({ inboxes, currentInboxId }: Props) {
 
   function switchInbox(id: string) {
     setOpen(false)
-    router.push(`/dashboard?inbox=${id}`)
+    window.location.href = hrefPrefix + id
   }
 
   return (
@@ -59,6 +62,11 @@ export function InboxSwitcher({ inboxes, currentInboxId }: Props) {
                 <Check className="w-4 h-4 text-[#7c7cf8] flex-shrink-0" />
               ) : (
                 <span className="w-4 h-4 flex-shrink-0" />
+              )}
+              {inbox.image ? (
+                <Image src={inbox.image} alt="" width={20} height={20} className="rounded-md flex-shrink-0" />
+              ) : (
+                <span className="w-5 h-5 flex-shrink-0" />
               )}
               <span className="text-sm text-gray-700 truncate">{inbox.email}</span>
             </button>

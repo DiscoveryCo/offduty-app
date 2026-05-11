@@ -8,9 +8,10 @@ interface Props {
   email: string
   image: string | null
   settingsHref: string
+  dashboardHref?: string
 }
 
-export function UserMenu({ email, image, settingsHref }: Props) {
+export function UserMenu({ email, image, settingsHref, dashboardHref = "/dashboard" }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -37,7 +38,7 @@ export function UserMenu({ email, image, settingsHref }: Props) {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
           <a
-            href="/dashboard"
+            href={dashboardHref}
             className="flex items-center gap-2 px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
             onClick={() => setOpen(false)}
           >
