@@ -39,10 +39,7 @@ export async function POST(req: NextRequest) {
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice
       const customerId = invoice.customer as string
-      await prisma.user.updateMany({
-        where: { stripeCustomerId: customerId },
-        data: { subscriptionStatus: "past_due" },
-      })
+      await handlePaymentFailed(customerId)
       break
     }
   }
@@ -71,6 +68,35 @@ async function handleSubscriptionChange(sub: Stripe.Subscription) {
       currentPeriodEnd,
     },
   })
+}
+
+async function handlePaymentFailed(customerId: string) {
+  const user = await prisma.user.findFirst({
+    where: { stripeCustomerId: customerId },
+    include: { inboxes: true },
+  })
+  if (!user) return
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { subscriptionStatus: "past_due" },
+  })
+
+  await Promise.allSettled(
+    user.inboxes.map(async (inbox) => {
+      try {
+        const gmail = await getGmailClient(inbox)
+        if (inbox.holdLabelId) await releaseEmails(gmail, inbox.holdLabelId)
+        await stopWatch(gmail)
+        await prisma.inbox.update({
+          where: { id: inbox.id },
+          data: { isActive: false },
+        })
+      } catch {
+        // non-fatal
+      }
+    })
+  )
 }
 
 async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
