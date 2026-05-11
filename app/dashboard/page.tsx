@@ -10,6 +10,7 @@ import { InboxSwitcher } from "@/components/InboxSwitcher"
 import { getGmailClient, getHeldCount } from "@/lib/gmail"
 import { ActivityPagination } from "@/components/ActivityPagination"
 import { HeldEmailsCard } from "@/components/HeldEmailsCard"
+import { AutoRefresh } from "@/components/AutoRefresh"
 import { formatDistanceToNow, format } from "date-fns"
 import { Suspense } from "react"
 
@@ -43,7 +44,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
     include: {
       inboxes: {
         orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
-        select: { id: true, email: true },
+        select: { id: true, email: true, image: true },
       },
     },
   })
@@ -100,6 +101,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <AutoRefresh intervalMs={30000} />
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-3 grid grid-cols-3 items-center">
         <div className="flex items-center gap-2">
@@ -110,7 +112,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
           <InboxSwitcher inboxes={user.inboxes} currentInboxId={fullInbox.id} />
         </div>
         <div className="flex justify-end">
-          <UserMenu email={user.email} image={user.image ?? null} settingsHref={settingsHref} />
+          <UserMenu email={user.email} image={user.image ?? null} settingsHref={settingsHref} dashboardHref={`/dashboard?inbox=${fullInbox.id}`} />
         </div>
       </header>
 
@@ -165,7 +167,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
               <p className="text-gray-400 text-xs mt-0.5">Member since {joinDate}</p>
             </div>
           </div>
-          <DashboardActions isActive={fullInbox.isActive} inboxId={fullInbox.id} />
+          <DashboardActions key={fullInbox.id} isActive={fullInbox.isActive} inboxId={fullInbox.id} />
         </div>
 
         {/* Stat cards */}
