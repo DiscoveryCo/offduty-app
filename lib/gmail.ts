@@ -82,23 +82,34 @@ export async function releaseEmails(
   gmail: ReturnType<typeof google.gmail>,
   holdLabelId: string
 ): Promise<number> {
-  const { data } = await gmail.users.messages.list({
-    userId: "me",
-    labelIds: [holdLabelId],
-    maxResults: 500,
-  })
-  const messages = data.messages ?? []
-  if (messages.length === 0) return 0
+  let total = 0
+  let pageToken: string | undefined
 
-  await gmail.users.messages.batchModify({
-    userId: "me",
-    requestBody: {
-      ids: messages.map((m) => m.id!),
-      addLabelIds: ["INBOX"],
-      removeLabelIds: [holdLabelId],
-    },
-  })
-  return messages.length
+  do {
+    const { data } = await gmail.users.messages.list({
+      userId: "me",
+      labelIds: [holdLabelId],
+      maxResults: 500,
+      ...(pageToken ? { pageToken } : {}),
+    })
+
+    const messages = data.messages ?? []
+    if (messages.length > 0) {
+      await gmail.users.messages.batchModify({
+        userId: "me",
+        requestBody: {
+          ids: messages.map((m) => m.id!),
+          addLabelIds: ["INBOX"],
+          removeLabelIds: [holdLabelId],
+        },
+      })
+      total += messages.length
+    }
+
+    pageToken = data.nextPageToken ?? undefined
+  } while (pageToken)
+
+  return total
 }
 
 export function isVip(
@@ -153,10 +164,19 @@ export async function getHeldCount(
   gmail: ReturnType<typeof google.gmail>,
   holdLabelId: string
 ): Promise<number> {
-  const { data } = await gmail.users.messages.list({
-    userId: "me",
-    labelIds: [holdLabelId],
-    maxResults: 500,
-  })
-  return data.messages?.length ?? 0
+  let total = 0
+  let pageToken: string | undefined
+
+  do {
+    const { data } = await gmail.users.messages.list({
+      userId: "me",
+      labelIds: [holdLabelId],
+      maxResults: 500,
+      ...(pageToken ? { pageToken } : {}),
+    })
+    total += data.messages?.length ?? 0
+    pageToken = data.nextPageToken ?? undefined
+  } while (pageToken)
+
+  return total
 }
