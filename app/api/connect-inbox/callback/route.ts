@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { google } from "googleapis"
 import { cookies } from "next/headers"
-import { getGmailClient, ensureHoldLabel, registerWatch } from "@/lib/gmail"
+import { getGmailClient, ensureHoldLabel } from "@/lib/gmail"
 
 export async function GET(req: NextRequest) {
   const session = await auth()
@@ -73,11 +73,9 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    // Set up Gmail infrastructure for the new inbox
+    // Create the hold label so it's ready when the user enables holding
     const gmail = await getGmailClient(inbox)
     await ensureHoldLabel(gmail, inbox.id)
-    await registerWatch(gmail, inbox.id)
-    await prisma.inbox.update({ where: { id: inbox.id }, data: { isActive: true } })
 
     return NextResponse.redirect(new URL(`/dashboard?inbox=${inbox.id}`, process.env.NEXTAUTH_URL!))
   } catch (err) {
