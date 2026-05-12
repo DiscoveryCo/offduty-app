@@ -4,6 +4,11 @@ import { getGmailClient, ensureHoldLabel, holdEmail, isVip } from "@/lib/gmail"
 import { isAllowedToHold } from "@/lib/scheduler"
 
 export async function POST(req: NextRequest) {
+  const secret = process.env.GMAIL_WEBHOOK_SECRET
+  if (secret && req.nextUrl.searchParams.get("token") !== secret) {
+    return NextResponse.json({}, { status: 401 })
+  }
+
   try {
     const body = await req.json()
     const encoded = body?.message?.data
