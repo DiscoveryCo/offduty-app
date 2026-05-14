@@ -7,9 +7,11 @@ import { RefreshCw } from "lucide-react"
 interface Props {
   heldCount: number
   isActive: boolean
+  pausedUntil: string | null
 }
 
-export function HeldEmailsCard({ heldCount, isActive }: Props) {
+export function HeldEmailsCard({ heldCount, isActive, pausedUntil }: Props) {
+  const isPaused = pausedUntil ? new Date(pausedUntil) > new Date() : false
   const [hidden, setHidden] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const router = useRouter()
@@ -40,7 +42,11 @@ export function HeldEmailsCard({ heldCount, isActive }: Props) {
           </button>
         )}
       </div>
-      {isActive ? (
+      {isPaused ? (
+        <p className="text-sm text-[#4D4D4D]">
+          Hold is temporarily lifted. Emails are flowing through.
+        </p>
+      ) : isActive ? (
         hidden ? (
           <p className="text-sm text-[#4D4D4D]">Count hidden.</p>
         ) : (
@@ -54,7 +60,7 @@ export function HeldEmailsCard({ heldCount, isActive }: Props) {
           DiscoveryMail is off. Start it to begin holding emails.
         </p>
       )}
-      {isActive && (
+      {isActive && !isPaused && (
         <button
           onClick={toggle}
           className="text-[#A78BFA] text-sm mt-2 inline-block hover:underline"

@@ -142,13 +142,13 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
           </div>
         )}
         {user.subscriptionStatus === "past_due" && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
-            <p className="text-sm text-red-700">
+          <div className="mb-6 bg-[#fff1f3] border border-[#fda4af] rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+            <p className="text-sm text-[#be1d37]">
               Your last payment failed. Update your payment details to keep emails held.
             </p>
             <Link
               href="/billing"
-              className="flex-shrink-0 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              className="flex-shrink-0 bg-[#F43F5E] hover:bg-[#d93652] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
             >
               Fix Payment
             </Link>
@@ -202,7 +202,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
             </Link>
           </div>
 
-          <HeldEmailsCard heldCount={heldCount} isActive={fullInbox.isActive} />
+          <HeldEmailsCard heldCount={heldCount} isActive={fullInbox.isActive} pausedUntil={fullInbox.pausedUntil?.toISOString() ?? null} />
         </div>
 
         {/* Activity Log */}
