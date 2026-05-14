@@ -7,13 +7,13 @@ export default async function LoginPage() {
   if (session) redirect("/dashboard")
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white border border-gray-200 rounded-2xl p-10 flex flex-col items-center gap-8 w-full max-w-sm shadow-sm">
+    <div className="min-h-screen bg-[#F2F0EE] flex items-center justify-center">
+      <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-2xl p-10 flex flex-col items-center gap-8 w-full max-w-sm shadow-sm">
         <div className="flex items-center gap-2">
-          <Mail className="w-7 h-7 text-[#7c7cf8]" />
-          <span className="text-2xl font-bold tracking-tight text-gray-900">DiscoveryMail</span>
+          <Mail className="w-7 h-7 text-[#A78BFA]" />
+          <span className="text-2xl font-bold tracking-tight text-[#161616]">DiscoveryMail</span>
         </div>
-        <p className="text-gray-500 text-sm text-center leading-relaxed">
+        <p className="text-[#4D4D4D] text-sm text-center leading-relaxed">
           Batch your Gmail inbox on your schedule.
           <br />
           Sign in to get started.
@@ -27,7 +27,7 @@ export default async function LoginPage() {
         >
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-3 border border-gray-200 bg-white text-gray-700 font-medium rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-3 border border-[#D1D0D0] bg-[#FFFDFB] text-[#161616] font-medium rounded-lg px-4 py-3 hover:bg-[#F2F0EE] transition-colors text-sm"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -50,7 +50,7 @@ export default async function LoginPage() {
             Sign in with Google
           </button>
         </form>
-        <p className="text-gray-400 text-xs text-center">
+        <p className="text-[#4D4D4D] text-xs text-center">
           DiscoveryMail requests access to read and modify your Gmail so it can
           hold and release emails on schedule.
         </p>

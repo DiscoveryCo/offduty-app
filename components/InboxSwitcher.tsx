@@ -41,25 +41,25 @@ export function InboxSwitcher({ inboxes, currentInboxId, hrefPrefix = "/dashboar
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 transition-colors"
+        className="flex items-center gap-2 text-sm text-[#161616] hover:text-[#161616] transition-colors"
       >
         <span>{current?.email}</span>
-        <ChevronDown className="w-4 h-4 text-gray-400" />
+        <ChevronDown className="w-4 h-4 text-[#4D4D4D]" />
       </button>
 
       {open && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
-          <div className="px-4 py-2 text-xs text-gray-400 uppercase tracking-widest font-semibold border-b border-gray-100">
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-lg overflow-hidden z-50">
+          <div className="px-4 py-2 text-xs text-[#4D4D4D] uppercase tracking-widest font-semibold border-b border-[#F2F0EE]">
             Inboxes
           </div>
           {inboxes.map((inbox) => (
             <button
               key={inbox.id}
               onClick={() => switchInbox(inbox.id)}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F2F0EE] transition-colors"
             >
               {inbox.id === currentInboxId ? (
-                <Check className="w-4 h-4 text-[#7c7cf8] flex-shrink-0" />
+                <Check className="w-4 h-4 text-[#A78BFA] flex-shrink-0" />
               ) : (
                 <span className="w-4 h-4 flex-shrink-0" />
               )}
@@ -68,13 +68,13 @@ export function InboxSwitcher({ inboxes, currentInboxId, hrefPrefix = "/dashboar
               ) : (
                 <span className="w-5 h-5 flex-shrink-0" />
               )}
-              <span className="text-sm text-gray-700 truncate">{inbox.email}</span>
+              <span className="text-sm text-[#161616] truncate">{inbox.email}</span>
             </button>
           ))}
-          <div className="border-t border-gray-100">
+          <div className="border-t border-[#F2F0EE]">
             <a
               href="/connect-inbox"
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#4D4D4D] hover:text-[#161616] hover:bg-[#F2F0EE] transition-colors"
               onClick={() => setOpen(false)}
             >
               <PlusCircle className="w-4 h-4 flex-shrink-0" />

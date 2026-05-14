@@ -80,16 +80,16 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
     <div className="space-y-8 max-w-2xl">
       {/* Domains */}
       <section>
-        <h3 className="font-semibold text-gray-900 mb-1">VIP Domains</h3>
-        <p className="text-sm text-gray-500 mb-3">
+        <h3 className="font-semibold text-[#161616] mb-1">VIP Domains</h3>
+        <p className="text-sm text-[#4D4D4D] mb-3">
           Emails from any of these domains will be immediately delivered.
         </p>
-        <div className="border border-gray-200 rounded-lg bg-gray-50 min-h-20 p-3">
+        <div className="border border-[#D1D0D0] rounded-lg bg-[#F2F0EE] min-h-20 p-3">
           <div className="flex flex-wrap gap-2 mb-2">
             {domains.map((d) => (
-              <span key={d} className="flex items-center gap-1 bg-white border border-gray-200 rounded px-2 py-1 text-sm text-gray-700">
+              <span key={d} className="flex items-center gap-1 bg-[#FFFDFB] border border-[#D1D0D0] rounded px-2 py-1 text-sm text-[#161616]">
                 {d}
-                <button onClick={() => removeFrom(d, domains, setDomains)} className="text-gray-400 hover:text-gray-600 ml-1">
+                <button onClick={() => removeFrom(d, domains, setDomains)} className="text-[#4D4D4D] hover:text-[#4D4D4D] ml-1">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -105,23 +105,23 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
               }
             }}
             placeholder="Add domains..."
-            className="w-full bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+            className="w-full bg-transparent text-sm text-[#161616] placeholder-[#4D4D4D] outline-none"
           />
         </div>
       </section>
 
       {/* Email Addresses */}
       <section>
-        <h3 className="font-semibold text-gray-900 mb-1">VIP Email Addresses</h3>
-        <p className="text-sm text-gray-500 mb-3">
+        <h3 className="font-semibold text-[#161616] mb-1">VIP Email Addresses</h3>
+        <p className="text-sm text-[#4D4D4D] mb-3">
           Emails from any of these addresses will be immediately delivered.
         </p>
-        <div className="border border-gray-200 rounded-lg bg-gray-50 min-h-20 p-3">
+        <div className="border border-[#D1D0D0] rounded-lg bg-[#F2F0EE] min-h-20 p-3">
           <div className="flex flex-wrap gap-2 mb-2">
             {emails.map((e) => (
-              <span key={e} className="flex items-center gap-1 bg-white border border-gray-200 rounded px-2 py-1 text-sm text-gray-700">
+              <span key={e} className="flex items-center gap-1 bg-[#FFFDFB] border border-[#D1D0D0] rounded px-2 py-1 text-sm text-[#161616]">
                 {e}
-                <button onClick={() => removeFrom(e, emails, setEmails)} className="text-gray-400 hover:text-gray-600 ml-1">
+                <button onClick={() => removeFrom(e, emails, setEmails)} className="text-[#4D4D4D] hover:text-[#4D4D4D] ml-1">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -137,23 +137,23 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
               }
             }}
             placeholder="Add email addresses..."
-            className="w-full bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+            className="w-full bg-transparent text-sm text-[#161616] placeholder-[#4D4D4D] outline-none"
           />
         </div>
       </section>
 
       {/* Keywords */}
       <section>
-        <h3 className="font-semibold text-gray-900 mb-1">VIP Keywords</h3>
-        <p className="text-sm text-gray-500 mb-3">
+        <h3 className="font-semibold text-[#161616] mb-1">VIP Keywords</h3>
+        <p className="text-sm text-[#4D4D4D] mb-3">
           Emails containing any of these words will be immediately delivered.
         </p>
-        <div className="border border-gray-200 rounded-lg bg-gray-50 min-h-20 p-3">
+        <div className="border border-[#D1D0D0] rounded-lg bg-[#F2F0EE] min-h-20 p-3">
           <div className="flex flex-wrap gap-2 mb-2">
             {keywords.map((k) => (
-              <span key={k} className="flex items-center gap-1 bg-white border border-gray-200 rounded px-2 py-1 text-sm text-gray-700">
+              <span key={k} className="flex items-center gap-1 bg-[#FFFDFB] border border-[#D1D0D0] rounded px-2 py-1 text-sm text-[#161616]">
                 {k}
-                <button onClick={() => removeFrom(k, keywords, setKeywords)} className="text-gray-400 hover:text-gray-600 ml-1">
+                <button onClick={() => removeFrom(k, keywords, setKeywords)} className="text-[#4D4D4D] hover:text-[#4D4D4D] ml-1">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -169,10 +169,10 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
               }
             }}
             placeholder="Add keywords..."
-            className="w-full bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+            className="w-full bg-transparent text-sm text-[#161616] placeholder-[#4D4D4D] outline-none"
           />
         </div>
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-xs text-[#4D4D4D] mt-2">
           VIP Keywords can be used to NOT miss out on emails like password-resets and email-confirmations.
         </p>
       </section>
@@ -181,7 +181,7 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
         <button
           onClick={save}
           disabled={saving || copying}
-          className="bg-[#7c7cf8] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#6b6be7] transition-colors disabled:opacity-50"
+          className="bg-[#A78BFA] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#8B5CF6] transition-colors disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save changes"}
         </button>
@@ -193,7 +193,7 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
               if (e.target.value) copyFromInbox(e.target.value)
               e.target.value = ""
             }}
-            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-600 bg-white disabled:opacity-50 max-w-44"
+            className="border border-[#D1D0D0] rounded-lg px-3 py-2.5 text-sm text-[#4D4D4D] bg-[#FFFDFB] disabled:opacity-50 max-w-44"
           >
             <option value="">Copy from inbox…</option>
             {otherInboxes.map((inbox) => (

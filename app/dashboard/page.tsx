@@ -100,13 +100,13 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
   const settingsHref = `/settings?inbox=${fullInbox.id}`
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[#F2F0EE] flex flex-col">
       {fullInbox.isActive && <AutoRefresh intervalMs={30000} />}
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 grid grid-cols-3 items-center">
+      <header className="bg-[#FFFDFB] border-b border-[#D1D0D0] px-6 py-3 grid grid-cols-3 items-center">
         <div className="flex items-center gap-2">
-          <Mail className="w-5 h-5 text-[#7c7cf8]" />
-          <span className="font-bold text-lg tracking-tight text-gray-900">DiscoveryMail</span>
+          <Mail className="w-5 h-5 text-[#A78BFA]" />
+          <span className="font-bold text-lg tracking-tight text-[#161616]">DiscoveryMail</span>
         </div>
         <div className="flex justify-center">
           <InboxSwitcher inboxes={user.inboxes} currentInboxId={fullInbox.id} />
@@ -162,9 +162,9 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
               <Image src={fullInbox.image} alt="" width={52} height={52} className="rounded-xl" />
             )}
             <div>
-              <p className="font-semibold text-gray-900 text-lg">{fullInbox.name}</p>
-              <p className="text-gray-500 text-sm">{fullInbox.email}</p>
-              <p className="text-gray-400 text-xs mt-0.5">Member since {joinDate}</p>
+              <p className="font-semibold text-[#161616] text-lg">{fullInbox.name}</p>
+              <p className="text-[#4D4D4D] text-sm">{fullInbox.email}</p>
+              <p className="text-[#4D4D4D] text-xs mt-0.5">Member since {joinDate}</p>
             </div>
           </div>
           <DashboardActions key={fullInbox.id} isActive={fullInbox.isActive} inboxId={fullInbox.id} />
@@ -172,32 +172,32 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
 
         {/* Stat cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
+          <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-5">
+            <p className="text-xs font-semibold text-[#4D4D4D] uppercase tracking-widest mb-2">
               VIP List
             </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              You have <strong className="text-gray-900">{domainCount} domain{domainCount !== 1 ? "s" : ""}</strong>,{" "}
-              <strong className="text-gray-900">{emailCount} email address{emailCount !== 1 ? "es" : ""}</strong> and{" "}
-              <strong className="text-gray-900">{keywordCount} keyword{keywordCount !== 1 ? "s" : ""}</strong> in your VIP List.
+            <p className="text-sm text-[#4D4D4D] leading-relaxed">
+              You have <strong className="text-[#161616]">{domainCount} domain{domainCount !== 1 ? "s" : ""}</strong>,{" "}
+              <strong className="text-[#161616]">{emailCount} email address{emailCount !== 1 ? "es" : ""}</strong> and{" "}
+              <strong className="text-[#161616]">{keywordCount} keyword{keywordCount !== 1 ? "s" : ""}</strong> in your VIP List.
             </p>
-            <Link href={`${settingsHref}&tab=vip`} className="text-[#7c7cf8] text-sm mt-2 inline-block hover:underline">
+            <Link href={`${settingsHref}&tab=vip`} className="text-[#A78BFA] text-sm mt-2 inline-block hover:underline">
               Manage VIPs
             </Link>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
+          <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-5">
+            <p className="text-xs font-semibold text-[#4D4D4D] uppercase tracking-widest mb-2">
               Delivery
             </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-[#4D4D4D] leading-relaxed">
               Your emails are delivered at{" "}
-              <strong className="text-gray-900">{scheduleLabel(fullInbox.settings)}</strong>.{" "}
+              <strong className="text-[#161616]">{scheduleLabel(fullInbox.settings)}</strong>.{" "}
               {fullInbox.settings?.dndEnabled && fullInbox.settings.dndFrom && fullInbox.settings.dndTo
                 ? `DND active from ${fullInbox.settings.dndFrom} to ${fullInbox.settings.dndTo}.`
                 : "You do not have any DND period set."}
             </p>
-            <Link href={`${settingsHref}&tab=delivery`} className="text-[#7c7cf8] text-sm mt-2 inline-block hover:underline">
+            <Link href={`${settingsHref}&tab=delivery`} className="text-[#A78BFA] text-sm mt-2 inline-block hover:underline">
               Manage delivery
             </Link>
           </div>
@@ -208,13 +208,13 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
         {/* Activity Log */}
         <div>
           <div className="flex items-center mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Activity Log</h2>
+            <h2 className="text-lg font-semibold text-[#161616]">Activity Log</h2>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 text-gray-400 text-xs uppercase tracking-widest">
+                <tr className="border-b border-[#F2F0EE] text-[#4D4D4D] text-xs uppercase tracking-widest">
                   <th className="text-left px-5 py-3 font-medium w-48">Date</th>
                   <th className="text-right px-5 py-3 font-medium">Emails Processed</th>
                 </tr>
@@ -222,18 +222,18 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
               <tbody>
                 {fullInbox.activityLogs.length === 0 ? (
                   <tr>
-                    <td colSpan={2} className="px-5 py-10 text-center text-gray-400">
+                    <td colSpan={2} className="px-5 py-10 text-center text-[#4D4D4D]">
                       No deliveries yet. Start DiscoveryMail to begin batching your inbox.
                     </td>
                   </tr>
                 ) : (
                   fullInbox.activityLogs.map((log) => (
-                    <tr key={log.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    <tr key={log.id} className="border-b border-[#F2F0EE] hover:bg-[#F2F0EE] transition-colors">
                       <td className="px-5 py-3">
-                        <p className="text-gray-700">{formatDate(log.deliveredAt)}</p>
-                        {log.slotTime && <p className="text-gray-400 text-xs mt-0.5">{log.slotTime}</p>}
+                        <p className="text-[#161616]">{formatDate(log.deliveredAt)}</p>
+                        {log.slotTime && <p className="text-[#4D4D4D] text-xs mt-0.5">{log.slotTime}</p>}
                       </td>
-                      <td className="px-5 py-3 text-right text-gray-900 font-medium">{log.emailCount}</td>
+                      <td className="px-5 py-3 text-right text-[#161616] font-medium">{log.emailCount}</td>
                     </tr>
                   ))
                 )}
@@ -246,12 +246,12 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-6 px-6 flex items-center justify-between mt-4">
+      <footer className="border-t border-[#D1D0D0] py-6 px-6 flex items-center justify-between mt-4">
         <div className="flex items-center gap-2">
-          <Mail className="w-4 h-4 text-[#7c7cf8]" />
-          <span className="text-sm font-semibold text-gray-700">DiscoveryMail</span>
+          <Mail className="w-4 h-4 text-[#A78BFA]" />
+          <span className="text-sm font-semibold text-[#161616]">DiscoveryMail</span>
         </div>
-        <span className="text-xs text-gray-400">© {new Date().getFullYear()}</span>
+        <span className="text-xs text-[#4D4D4D]">© {new Date().getFullYear()}</span>
       </footer>
     </div>
   )

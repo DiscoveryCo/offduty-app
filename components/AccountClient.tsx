@@ -40,7 +40,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
   if (confirming) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500">Remove this inbox?</span>
+        <span className="text-xs text-[#4D4D4D]">Remove this inbox?</span>
         <button
           onClick={handleRemove}
           disabled={loading}
@@ -50,7 +50,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
         </button>
         <button
           onClick={() => setConfirming(false)}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-[#4D4D4D] hover:text-[#4D4D4D]"
         >
           <X className="w-4 h-4" />
         </button>
@@ -61,7 +61,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+      className="text-xs text-[#4D4D4D] hover:text-red-500 transition-colors"
     >
       Remove
     </button>
@@ -110,7 +110,7 @@ export function DeleteAccountButton() {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Type DELETE to confirm"
-        className="w-full border border-red-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red-300"
+        className="w-full border border-red-200 rounded-lg px-3 py-2 text-sm bg-[#FFFDFB] focus:outline-none focus:ring-2 focus:ring-red-300"
       />
       <div className="flex gap-2">
         <button
@@ -122,7 +122,7 @@ export function DeleteAccountButton() {
         </button>
         <button
           onClick={() => { setConfirming(false); setInput("") }}
-          className="border border-gray-200 text-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          className="border border-[#D1D0D0] text-[#4D4D4D] text-sm px-4 py-2 rounded-lg hover:bg-[#F2F0EE] transition-colors"
         >
           Cancel
         </button>

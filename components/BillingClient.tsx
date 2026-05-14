@@ -141,21 +141,21 @@ export function BillingClient({
     return (
       <div className="space-y-4">
         {/* Plan card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Plan</h2>
+        <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-6">
+          <h2 className="font-semibold text-[#161616] mb-4">Plan</h2>
           <div className="flex items-center justify-between">
             <div>
               {price ? (
-                <p className="text-gray-900 font-medium">
+                <p className="text-[#161616] font-medium">
                   <span className="font-bold">${price}/{intervalLabel}</span>
-                  <span className="text-gray-500 font-normal ml-2">
+                  <span className="text-[#4D4D4D] font-normal ml-2">
                     {subDetails!.cancelAtPeriodEnd
                       ? `Access until ${subDetails!.periodEnd}`
                       : `Renews ${subDetails!.periodEnd}`}
                   </span>
                 </p>
               ) : (
-                <p className="text-gray-900 font-medium">DiscoveryMail — Active</p>
+                <p className="text-[#161616] font-medium">DiscoveryMail — Active</p>
               )}
               {subDetails?.cancelAtPeriodEnd && (
                 <p className="text-xs text-amber-600 mt-1">
@@ -167,13 +167,13 @@ export function BillingClient({
               <button
                 onClick={handleResume}
                 disabled={loading === "resume"}
-                className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#7c7cf8] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
               >
                 {loading === "resume" ? "Loading…" : "Resume membership"}
               </button>
             ) : !subDetails ? null : confirming ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500">Cancel at period end?</span>
+                <span className="text-xs text-[#4D4D4D]">Cancel at period end?</span>
                 <button
                   onClick={handleCancel}
                   disabled={loading === "cancel"}
@@ -183,7 +183,7 @@ export function BillingClient({
                 </button>
                 <button
                   onClick={() => setConfirming(false)}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-xs text-[#4D4D4D] hover:text-[#4D4D4D] transition-colors"
                 >
                   Keep
                 </button>
@@ -191,7 +191,7 @@ export function BillingClient({
             ) : (
               <button
                 onClick={() => setConfirming(true)}
-                className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+                className="text-sm text-[#4D4D4D] hover:text-red-500 transition-colors"
               >
                 Cancel
               </button>
@@ -200,10 +200,10 @@ export function BillingClient({
         </div>
 
         {/* Payment method */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Payment Method</h2>
+        <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-6">
+          <h2 className="font-semibold text-[#161616] mb-4">Payment Method</h2>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-gray-500 text-sm">
+            <div className="flex items-center gap-2 text-[#4D4D4D] text-sm">
               <CreditCard className="w-4 h-4" />
               {subDetails?.cardBrand && subDetails?.cardLast4 ? (
                 <span className="capitalize">{subDetails.cardBrand} •••• {subDetails.cardLast4}</span>
@@ -214,7 +214,7 @@ export function BillingClient({
             <button
               onClick={handleUpdateCard}
               disabled={loading === "updateCard"}
-              className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#7c7cf8] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
+              className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               {loading === "updateCard" ? "Loading…" : "Update card"}
@@ -223,14 +223,14 @@ export function BillingClient({
         </div>
 
         {/* Invoice history */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Invoice History</h2>
+        <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-6">
+          <h2 className="font-semibold text-[#161616] mb-4">Invoice History</h2>
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">View and download past invoices.</p>
+            <p className="text-sm text-[#4D4D4D]">View and download past invoices.</p>
             <button
               onClick={handleViewInvoices}
               disabled={loading === "invoices"}
-              className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#7c7cf8] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
             >
               {loading === "invoices" ? "Loading…" : "View invoices"}
             </button>
@@ -248,20 +248,20 @@ export function BillingClient({
 
   return (
     <div className="max-w-sm mx-auto">
-      <p className="text-xs text-gray-400 text-center mb-4 italic">All prices are in USD.</p>
+      <p className="text-xs text-[#4D4D4D] text-center mb-4 italic">All prices are in USD.</p>
 
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-        <h3 className="text-xl font-bold text-gray-900 text-center mb-4">DiscoveryMail</h3>
+      <div className="bg-[#FFFDFB] border border-[#D1D0D0] rounded-2xl p-6 shadow-sm">
+        <h3 className="text-xl font-bold text-[#161616] text-center mb-4">DiscoveryMail</h3>
 
         {/* Price */}
         <div className="text-center mb-4">
           <div className="flex items-start justify-center gap-1">
-            <span className="text-sm text-gray-400 mt-2">$</span>
-            <span className="text-6xl font-bold text-[#7c7cf8] leading-none">{displayPrice}</span>
-            <span className="text-sm text-[#7c7cf8] mt-auto mb-1">per month</span>
+            <span className="text-sm text-[#4D4D4D] mt-2">$</span>
+            <span className="text-6xl font-bold text-[#A78BFA] leading-none">{displayPrice}</span>
+            <span className="text-sm text-[#A78BFA] mt-auto mb-1">per month</span>
           </div>
           {billing === "annual" && (
-            <p className="text-xs text-gray-400 mt-1">billed as $47.99/year</p>
+            <p className="text-xs text-[#4D4D4D] mt-1">billed as $47.99/year</p>
           )}
         </div>
 
@@ -271,8 +271,8 @@ export function BillingClient({
             onClick={() => setBilling("annual")}
             className={`text-sm px-4 py-1.5 rounded-full font-medium transition-colors ${
               billing === "annual"
-                ? "bg-[#7c7cf8] text-white"
-                : "text-[#7c7cf8] hover:bg-[#ededff]"
+                ? "bg-[#A78BFA] text-white"
+                : "text-[#A78BFA] hover:bg-[#ededff]"
             }`}
           >
             Yearly
@@ -281,8 +281,8 @@ export function BillingClient({
             onClick={() => setBilling("monthly")}
             className={`text-sm px-4 py-1.5 rounded-full font-medium transition-colors ${
               billing === "monthly"
-                ? "bg-[#7c7cf8] text-white"
-                : "text-[#7c7cf8] hover:bg-[#ededff]"
+                ? "bg-[#A78BFA] text-white"
+                : "text-[#A78BFA] hover:bg-[#ededff]"
             }`}
           >
             Monthly
@@ -299,10 +299,10 @@ export function BillingClient({
                   <Star className="w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" />
                 ) : (
                   <div className="w-4 h-4 rounded-full bg-[#ededff] flex items-center justify-center flex-shrink-0">
-                    <Check className="w-2.5 h-2.5 text-[#7c7cf8]" strokeWidth={3} />
+                    <Check className="w-2.5 h-2.5 text-[#A78BFA]" strokeWidth={3} />
                   </div>
                 )}
-                <span className="text-sm text-gray-600">{feature}</span>
+                <span className="text-sm text-[#4D4D4D]">{feature}</span>
               </li>
             )
           })}
@@ -311,7 +311,7 @@ export function BillingClient({
         <button
           onClick={handleChoosePlan}
           disabled={loading !== null}
-          className="w-full bg-[#7c7cf8] hover:bg-[#6b6be0] text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50"
+          className="w-full bg-[#A78BFA] hover:bg-[#6b6be0] text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50"
         >
           {loading === "checkout" ? "Loading…" : "Choose Plan"}
         </button>

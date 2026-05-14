@@ -81,9 +81,9 @@ function TimeTag({ time, onRemove }: { time: string; onRemove: () => void }) {
   const ampm = h < 12 ? "am" : "pm"
   const display12 = ((h % 12) || 12).toString().padStart(2, "0") + ":" + String(m).padStart(2, "0") + ampm
   return (
-    <span className="flex items-center gap-1 border border-gray-300 rounded px-2 py-1 text-sm text-gray-700 bg-white">
+    <span className="flex items-center gap-1 border border-[#D1D0D0] rounded px-2 py-1 text-sm text-[#161616] bg-[#FFFDFB]">
       {display12}
-      <button onClick={onRemove} className="text-gray-400 hover:text-gray-700 ml-0.5">
+      <button onClick={onRemove} className="text-[#4D4D4D] hover:text-[#161616] ml-0.5">
         <X className="w-3 h-3" />
       </button>
     </span>
@@ -101,16 +101,16 @@ function AddTimeButton({ onAdd }: { onAdd: (time: string) => void }) {
           type="time"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="border border-gray-300 rounded px-2 py-1 text-sm"
+          className="border border-[#D1D0D0] rounded px-2 py-1 text-sm"
           autoFocus
         />
         <button
           onClick={() => { onAdd(value); setShow(false) }}
-          className="text-xs bg-[#7c7cf8] text-white px-2 py-1 rounded hover:bg-[#6b6be7]"
+          className="text-xs bg-[#A78BFA] text-white px-2 py-1 rounded hover:bg-[#8B5CF6]"
         >
           Add
         </button>
-        <button onClick={() => setShow(false)} className="text-gray-400 hover:text-gray-600">
+        <button onClick={() => setShow(false)} className="text-[#4D4D4D] hover:text-[#4D4D4D]">
           <X className="w-4 h-4" />
         </button>
       </span>
@@ -120,7 +120,7 @@ function AddTimeButton({ onAdd }: { onAdd: (time: string) => void }) {
   return (
     <button
       onClick={() => setShow(true)}
-      className="w-7 h-7 rounded-full bg-[#7c7cf8] text-white flex items-center justify-center hover:bg-[#6b6be7] transition-colors"
+      className="w-7 h-7 rounded-full bg-[#A78BFA] text-white flex items-center justify-center hover:bg-[#8B5CF6] transition-colors"
     >
       <Plus className="w-4 h-4" />
     </button>
@@ -258,14 +258,14 @@ export function DeliverySettings({
   return (
     <div className="space-y-6 max-w-2xl">
       {/* Timezone picker */}
-      <div className="border border-gray-200 rounded-xl p-5 bg-white">
+      <div className="border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-5 bg-[#FFFDFB]">
         <label className="block">
-          <p className="font-medium text-gray-900 text-sm mb-1">Timezone</p>
-          <p className="text-xs text-gray-500 mb-3">All delivery times are interpreted in this timezone, including DST changes.</p>
+          <p className="font-medium text-[#161616] text-sm mb-1">Timezone</p>
+          <p className="text-xs text-[#4D4D4D] mb-3">All delivery times are interpreted in this timezone, including DST changes.</p>
           <select
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-gray-900"
+            className="w-full border border-[#D1D0D0] rounded-lg px-3 py-2 text-sm bg-[#FFFDFB] text-[#161616]"
           >
             {/* If detected timezone isn't in the curated list, show it at the top */}
             {!TIMEZONES.some((tz) => tz.value === timezone) && timezone && (
@@ -285,18 +285,18 @@ export function DeliverySettings({
       {/* Schedule type selector */}
       <div className="space-y-3">
         {/* Option: interval */}
-        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "interval" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`} onClick={() => setScheduleType("interval")}>
+        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "interval" ? "border-[#A78BFA] bg-[#f0ebff]" : "border-[#D1D0D0] bg-[#FFFDFB]"}`} onClick={() => setScheduleType("interval")}>
           <div className="flex items-start gap-3">
-            <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "interval" ? "border-[#7c7cf8] bg-[#7c7cf8]" : "border-gray-300"}`} />
+            <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "interval" ? "border-[#A78BFA] bg-[#A78BFA]" : "border-[#D1D0D0]"}`} />
             <div className="flex-1">
-              <p className="font-medium text-gray-900 text-sm">Hours of interval</p>
-              <p className="text-xs text-gray-500">eg. deliver emails every 4 hours in a day</p>
+              <p className="font-medium text-[#161616] text-sm">Hours of interval</p>
+              <p className="text-xs text-[#4D4D4D]">eg. deliver emails every 4 hours in a day</p>
             </div>
             {scheduleType === "interval" && (
               <select
                 value={intervalHours}
                 onChange={(e) => setIntervalHours(Number(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white"
+                className="border border-[#D1D0D0] rounded-lg px-3 py-1.5 text-sm bg-[#FFFDFB]"
                 onClick={(e) => e.stopPropagation()}
               >
                 {[1, 2, 3, 4, 6, 8, 12].map((h) => (
@@ -308,18 +308,18 @@ export function DeliverySettings({
         </label>
 
         {/* Option: times */}
-        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "times" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`} onClick={() => setScheduleType("times")}>
+        <label className={`flex flex-col gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "times" ? "border-[#A78BFA] bg-[#f0ebff]" : "border-[#D1D0D0] bg-[#FFFDFB]"}`} onClick={() => setScheduleType("times")}>
           <div className="flex items-start gap-3">
-            <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "times" ? "border-[#7c7cf8] bg-[#7c7cf8]" : "border-gray-300"}`} />
+            <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "times" ? "border-[#A78BFA] bg-[#A78BFA]" : "border-[#D1D0D0]"}`} />
             <div className="flex-1">
-              <p className="font-medium text-gray-900 text-sm">Number of times</p>
-              <p className="text-xs text-gray-500">eg. send me emails 3 times in a day at equal intervals</p>
+              <p className="font-medium text-[#161616] text-sm">Number of times</p>
+              <p className="text-xs text-[#4D4D4D]">eg. send me emails 3 times in a day at equal intervals</p>
             </div>
             {scheduleType === "times" && (
               <select
                 value={timesPerDay}
                 onChange={(e) => setTimesPerDay(Number(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white"
+                className="border border-[#D1D0D0] rounded-lg px-3 py-1.5 text-sm bg-[#FFFDFB]"
                 onClick={(e) => e.stopPropagation()}
               >
                 {[2, 3, 4, 5, 6].map((n) => (
@@ -331,12 +331,12 @@ export function DeliverySettings({
         </label>
 
         {/* Option: custom daily */}
-        <div className={`border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "custom_daily" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`}>
+        <div className={`border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "custom_daily" ? "border-[#A78BFA] bg-[#f0ebff]" : "border-[#D1D0D0] bg-[#FFFDFB]"}`}>
           <div className="flex items-center gap-3" onClick={() => setScheduleType("custom_daily")}>
-            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "custom_daily" ? "border-[#7c7cf8] bg-[#7c7cf8]" : "border-gray-300"}`} />
+            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "custom_daily" ? "border-[#A78BFA] bg-[#A78BFA]" : "border-[#D1D0D0]"}`} />
             <div>
-              <p className="font-medium text-gray-900 text-sm">Custom daily schedule</p>
-              <p className="text-xs text-gray-500">eg. deliver emails at 1pm and 6pm</p>
+              <p className="font-medium text-[#161616] text-sm">Custom daily schedule</p>
+              <p className="text-xs text-[#4D4D4D]">eg. deliver emails at 1pm and 6pm</p>
             </div>
           </div>
           {scheduleType === "custom_daily" && (
@@ -350,19 +350,19 @@ export function DeliverySettings({
         </div>
 
         {/* Option: custom weekly */}
-        <div className={`border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "custom_weekly" ? "border-[#7c7cf8] bg-[#f5f5ff]" : "border-gray-200 bg-white"}`}>
+        <div className={`border rounded-xl p-4 cursor-pointer transition-colors ${scheduleType === "custom_weekly" ? "border-[#A78BFA] bg-[#f0ebff]" : "border-[#D1D0D0] bg-[#FFFDFB]"}`}>
           <div className="flex items-center gap-3" onClick={() => setScheduleType("custom_weekly")}>
-            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "custom_weekly" ? "border-[#7c7cf8] bg-[#7c7cf8]" : "border-gray-300"}`} />
+            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${scheduleType === "custom_weekly" ? "border-[#A78BFA] bg-[#A78BFA]" : "border-[#D1D0D0]"}`} />
             <div>
-              <p className="font-medium text-gray-900 text-sm">Custom weekly schedule</p>
-              <p className="text-xs text-gray-500">eg. deliver emails at 1pm and 6pm only on Mondays</p>
+              <p className="font-medium text-[#161616] text-sm">Custom weekly schedule</p>
+              <p className="text-xs text-[#4D4D4D]">eg. deliver emails at 1pm and 6pm only on Mondays</p>
             </div>
           </div>
           {scheduleType === "custom_weekly" && (
             <div className="mt-4 space-y-3 ml-7">
               {weeklySchedule.map((day) => (
-                <div key={day.dayOfWeek} className="border border-gray-200 rounded-lg bg-white">
-                  <div className="px-3 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-widest border-b border-gray-100">
+                <div key={day.dayOfWeek} className="border border-[#D1D0D0] rounded-lg bg-[#FFFDFB]">
+                  <div className="px-3 py-1.5 text-xs font-semibold text-[#4D4D4D] uppercase tracking-widest border-b border-[#F2F0EE]">
                     {DAY_ABBR[day.dayOfWeek]}
                   </div>
                   <div className="px-3 py-2 flex flex-wrap items-center gap-2">
@@ -372,7 +372,7 @@ export function DeliverySettings({
                     <AddTimeButton onAdd={(t) => addWeeklyTime(day.dayOfWeek, t)} />
                     <div className="ml-auto">
                       <select
-                        className="text-xs border border-gray-200 rounded px-2 py-1 text-gray-500 bg-white"
+                        className="text-xs border border-[#D1D0D0] rounded px-2 py-1 text-[#4D4D4D] bg-[#FFFDFB]"
                         defaultValue=""
                         onChange={(e) => {
                           if (e.target.value !== "") copyFrom(day.dayOfWeek, Number(e.target.value))
@@ -398,36 +398,36 @@ export function DeliverySettings({
       </div>
 
       {/* Do Not Disturb */}
-      <div className="border border-gray-200 rounded-xl p-5 bg-white">
+      <div className="border border-[#D1D0D0] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-5 bg-[#FFFDFB]">
         <div className="flex items-center justify-between mb-1">
           <div>
-            <p className="font-medium text-gray-900 text-sm">Do Not Disturb</p>
-            <p className="text-xs text-gray-500">No deliveries will be made during this period</p>
+            <p className="font-medium text-[#161616] text-sm">Do Not Disturb</p>
+            <p className="text-xs text-[#4D4D4D]">No deliveries will be made during this period</p>
           </div>
           <button
             role="switch"
             aria-checked={dndEnabled}
             onClick={() => setDndEnabled(!dndEnabled)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${dndEnabled ? "bg-[#7c7cf8]" : "bg-gray-200"}`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${dndEnabled ? "bg-[#A78BFA]" : "bg-[#D1D0D0]"}`}
           >
-            <span className={`inline-block w-4 h-4 bg-white rounded-full shadow transition-transform ${dndEnabled ? "translate-x-6" : "translate-x-1"}`} />
+            <span className={`inline-block w-4 h-4 bg-[#FFFDFB] rounded-full shadow transition-transform ${dndEnabled ? "translate-x-6" : "translate-x-1"}`} />
           </button>
         </div>
         {dndEnabled && (
           <div className="flex items-center gap-3 mt-3">
-            <span className="text-sm text-gray-600">From</span>
+            <span className="text-sm text-[#4D4D4D]">From</span>
             <input
               type="time"
               value={dndFrom}
               onChange={(e) => setDndFrom(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="border border-[#D1D0D0] rounded-lg px-3 py-1.5 text-sm"
             />
-            <span className="text-sm text-gray-600">To</span>
+            <span className="text-sm text-[#4D4D4D]">To</span>
             <input
               type="time"
               value={dndTo}
               onChange={(e) => setDndTo(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="border border-[#D1D0D0] rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
         )}
@@ -437,7 +437,7 @@ export function DeliverySettings({
         <button
           onClick={save}
           disabled={saving || copying}
-          className="bg-[#7c7cf8] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#6b6be7] transition-colors disabled:opacity-50"
+          className="bg-[#A78BFA] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#8B5CF6] transition-colors disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save changes"}
         </button>
@@ -449,7 +449,7 @@ export function DeliverySettings({
               if (e.target.value) copyFromInbox(e.target.value)
               e.target.value = ""
             }}
-            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-600 bg-white disabled:opacity-50 max-w-44"
+            className="border border-[#D1D0D0] rounded-lg px-3 py-2.5 text-sm text-[#4D4D4D] bg-[#FFFDFB] disabled:opacity-50 max-w-44"
           >
             <option value="">Copy from inbox…</option>
             {otherInboxes.map((inbox) => (

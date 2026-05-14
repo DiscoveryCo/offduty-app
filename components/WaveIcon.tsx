@@ -8,7 +8,7 @@ export function WaveIcon({ className }: { className?: string }) {
     >
       <path
         d="M0 8 C5 3, 10 13, 15 8 S25 3, 30 8 S35 13, 40 8"
-        stroke="#7c7cf8"
+        stroke="#A78BFA"
         strokeWidth="2"
         strokeLinecap="round"
         fill="none"

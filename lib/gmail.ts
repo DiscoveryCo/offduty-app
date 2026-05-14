@@ -4,22 +4,30 @@ import type { Inbox, VipRule } from "@/lib/generated/prisma/client"
 
 const HOLD_LABEL_NAME = "DiscoveryMail-Hold"
 
-function buildOAuth2Client() {
-  return new google.auth.OAuth2(
+const oauthClientCache = new Map<string, InstanceType<typeof google.auth.OAuth2>>()
+
+function getOAuth2Client(inbox: Inbox) {
+  const cached = oauthClientCache.get(inbox.id)
+  if (cached) {
+    // Update credentials in case tokens were refreshed since last use
+    cached.setCredentials({
+      access_token: inbox.accessToken,
+      refresh_token: inbox.refreshToken,
+      expiry_date: inbox.tokenExpiry ? inbox.tokenExpiry.getTime() : undefined,
+    })
+    return cached
+  }
+
+  const oauth2 = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
   )
-}
-
-export async function getGmailClient(inbox: Inbox) {
-  const oauth2 = buildOAuth2Client()
   oauth2.setCredentials({
     access_token: inbox.accessToken,
     refresh_token: inbox.refreshToken,
     expiry_date: inbox.tokenExpiry ? inbox.tokenExpiry.getTime() : undefined,
   })
-
   oauth2.on("tokens", async (tokens) => {
     await prisma.inbox.update({
       where: { id: inbox.id },
@@ -29,7 +37,12 @@ export async function getGmailClient(inbox: Inbox) {
       },
     })
   })
+  oauthClientCache.set(inbox.id, oauth2)
+  return oauth2
+}
 
+export async function getGmailClient(inbox: Inbox) {
+  const oauth2 = getOAuth2Client(inbox)
   return google.gmail({ version: "v1", auth: oauth2 })
 }
 

@@ -63,7 +63,7 @@ export function DashboardActions({ isActive: initialActive, inboxId }: Props) {
       <button
         onClick={handleDeliver}
         disabled={loading !== null}
-        className="flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+        className="flex items-center gap-2 border border-[#D1D0D0] text-[#161616] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#F2F0EE] transition-colors disabled:opacity-50"
       >
         <Truck className="w-4 h-4" />
         Deliver Now
@@ -74,7 +74,7 @@ export function DashboardActions({ isActive: initialActive, inboxId }: Props) {
         className={`flex items-center gap-2 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 ${
           isActive
             ? "bg-red-500 hover:bg-red-600"
-            : "bg-[#7c7cf8] hover:bg-[#6b6be7]"
+            : "bg-[#A78BFA] hover:bg-[#8B5CF6]"
         }`}
       >
         {isActive ? (

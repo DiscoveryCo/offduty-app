@@ -78,15 +78,15 @@ export default async function BillingPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[#F2F0EE] flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4">
-        <Link href="/dashboard" className="text-gray-400 hover:text-gray-600">
+      <header className="bg-[#FFFDFB] border-b border-[#D1D0D0] px-6 py-3 flex items-center gap-4">
+        <Link href="/dashboard" className="text-[#4D4D4D] hover:text-[#4D4D4D]">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-75 transition-opacity">
-          <Mail className="w-5 h-5 text-[#7c7cf8]" />
-          <span className="font-bold text-lg tracking-tight text-gray-900">DiscoveryMail</span>
+          <Mail className="w-5 h-5 text-[#A78BFA]" />
+          <span className="font-bold text-lg tracking-tight text-[#161616]">DiscoveryMail</span>
         </Link>
         <div className="ml-auto">
           <UserMenu email={user.email} image={user.image ?? null} settingsHref="/settings" />
@@ -94,7 +94,7 @@ export default async function BillingPage({
       </header>
 
       <main className="max-w-3xl mx-auto px-6 py-8 flex-1 w-full">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Billing</h1>
+        <h1 className="text-2xl font-bold text-[#161616] mb-6">Billing</h1>
 
         {/* Flash messages */}
         {showSuccess && (
@@ -123,7 +123,7 @@ export default async function BillingPage({
           </div>
         )}
         {isCanceled && (
-          <div className="bg-gray-100 border border-gray-200 text-gray-600 text-sm rounded-xl px-4 py-3 mb-6">
+          <div className="bg-[#F2F0EE] border border-[#D1D0D0] text-[#4D4D4D] text-sm rounded-xl px-4 py-3 mb-6">
             Your subscription has ended. Resubscribe below to resume email holding.
           </div>
         )}
@@ -137,12 +137,12 @@ export default async function BillingPage({
         />
       </main>
 
-      <footer className="border-t border-gray-200 py-6 px-6 flex items-center justify-between">
+      <footer className="border-t border-[#D1D0D0] py-6 px-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Mail className="w-4 h-4 text-[#7c7cf8]" />
-          <span className="text-sm font-semibold text-gray-700">DiscoveryMail</span>
+          <Mail className="w-4 h-4 text-[#A78BFA]" />
+          <span className="text-sm font-semibold text-[#161616]">DiscoveryMail</span>
         </div>
-        <span className="text-xs text-gray-400">© {new Date().getFullYear()}</span>
+        <span className="text-xs text-[#4D4D4D]">© {new Date().getFullYear()}</span>
       </footer>
     </div>
   )

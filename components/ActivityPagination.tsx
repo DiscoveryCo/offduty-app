@@ -38,13 +38,13 @@ export function ActivityPagination({ page, pages }: Props) {
       <button
         onClick={() => go(page - 1)}
         disabled={page === 1}
-        className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-30 text-gray-400"
+        className="p-1.5 rounded hover:bg-[#F2F0EE] disabled:opacity-30 text-[#4D4D4D]"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
       {pageNumbers.map((n, i) =>
         n === "..." ? (
-          <span key={`ellipsis-${i}`} className="px-2 text-gray-400 text-sm">
+          <span key={`ellipsis-${i}`} className="px-2 text-[#4D4D4D] text-sm">
             …
           </span>
         ) : (
@@ -53,8 +53,8 @@ export function ActivityPagination({ page, pages }: Props) {
             onClick={() => go(n as number)}
             className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
               n === page
-                ? "bg-[#7c7cf8] text-white"
-                : "text-gray-500 hover:bg-gray-100"
+                ? "bg-[#A78BFA] text-white"
+                : "text-[#4D4D4D] hover:bg-[#F2F0EE]"
             }`}
           >
             {n}
@@ -64,7 +64,7 @@ export function ActivityPagination({ page, pages }: Props) {
       <button
         onClick={() => go(page + 1)}
         disabled={page === pages}
-        className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-30 text-gray-400"
+        className="p-1.5 rounded hover:bg-[#F2F0EE] disabled:opacity-30 text-[#4D4D4D]"
       >
         <ChevronRight className="w-4 h-4" />
       </button>
