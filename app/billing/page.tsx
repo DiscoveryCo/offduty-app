@@ -83,27 +83,17 @@ export default async function BillingPage({
         const pm = sub.default_payment_method as import("stripe").Stripe.PaymentMethod | null
         const card = pm?.type === "card" ? pm.card : null
 
-        // For flat prices: unit_amount * quantity
-        // For tiered/graduated prices: unit_amount is null — retrieve price directly to get tiers
-        let totalAmount: number
-        if (price.unit_amount !== null && price.unit_amount !== undefined) {
-          totalAmount = price.unit_amount * quantity
-        } else {
-          const fullPrice = await stripe.prices.retrieve(price.id)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const tiers = (fullPrice as any).tiers ?? []
-          totalAmount = calculateGraduatedTotal(tiers, quantity)
-        }
-
-        // Apply coupon discount if present (use first active discount)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const coupon = (sub.discounts as any)?.[0]?.coupon
-        if (coupon && typeof coupon === "object") {
-          if (coupon.percent_off) {
-            totalAmount = Math.round(totalAmount * (1 - coupon.percent_off / 100))
-          } else if (coupon.amount_off) {
-            totalAmount = Math.max(0, totalAmount - coupon.amount_off)
-          }
+        // Use the upcoming invoice for the exact amount — handles all pricing models
+        // (flat, graduated, volume) and applies discounts automatically
+        let totalAmount = 0
+        try {
+          const upcoming = await stripe.invoices.createPreview({
+            customer: user.stripeCustomerId,
+          })
+          totalAmount = upcoming.total
+        } catch {
+          // Fall back to unit_amount if upcoming invoice unavailable
+          totalAmount = (price.unit_amount ?? 0) * quantity
         }
 
         subDetails = {
