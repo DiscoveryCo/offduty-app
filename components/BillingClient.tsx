@@ -279,8 +279,8 @@ export function BillingClient({
           {inboxCount > 1 && (
             <p className="text-xs text-[#4D4D4D] mt-1">
               {billing === "monthly"
-                ? `$4.99 base + $3.49 × ${additionalInboxes} additional inbox${additionalInboxes > 1 ? "es" : ""}`
-                : `$47.99 base + $33.59 × ${additionalInboxes} additional inbox${additionalInboxes > 1 ? "es" : ""}`}
+                ? `$4.99 base + $3.49 × ${additionalInboxes} additional inbox${additionalInboxes > 1 ? "es" : ""} (30% off)`
+                : `$47.99 base + $33.59 × ${additionalInboxes} additional inbox${additionalInboxes > 1 ? "es" : ""} (30% off)`}
             </p>
           )}
         </div>

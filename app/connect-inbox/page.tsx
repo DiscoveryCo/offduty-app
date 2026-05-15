@@ -44,7 +44,7 @@ export default async function ConnectInboxPage() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-start gap-3">
               <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-amber-700">
-                Adding this inbox will add <strong>$3.49/mo</strong> (or <strong>$33.59/yr</strong> on annual) to your subscription, billed immediately with proration.
+                Adding this inbox will add <strong>$3.49/mo</strong> (or <strong>$33.59/yr</strong> on annual) — a 30% discount for additional inboxes — billed immediately with proration.
               </p>
             </div>
           )}

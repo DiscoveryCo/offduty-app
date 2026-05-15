@@ -107,7 +107,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
       return (
         <div className="flex flex-col items-end gap-2">
           <p className="text-xs text-[#4D4D4D] text-right max-w-[200px]">
-            Adds $3.49/mo back, billed immediately.
+            Adds $3.49/mo (30% off) back to your subscription, billed immediately.
           </p>
           <div className="flex items-center gap-2">
             <button
