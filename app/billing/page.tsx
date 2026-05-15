@@ -69,7 +69,7 @@ export default async function BillingPage({
       const subscriptions = await stripe.subscriptions.list({
         customer: user.stripeCustomerId,
         limit: 1,
-        expand: ["data.items.data.price.tiers", "data.default_payment_method", "data.discounts.coupon"],
+        expand: ["data.items.data.price", "data.default_payment_method", "data.discounts.coupon"],
       })
       const sub = subscriptions.data[0]
       if (sub) {
