@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const rawEnd = (sub as unknown as Record<string, unknown>)["current_period_end"]
   const periodEnd = typeof rawEnd === "number" ? new Date(rawEnd * 1000) : new Date()
 
-  const currentPaidCount = user.inboxes.filter((i) => !i.trialEndsAt && !i.scheduledRemovalAt).length
+  const currentPaidCount = user.inboxes.filter((i) => !i.scheduledRemovalAt).length
   const newQuantity = Math.max(1, currentPaidCount - 1)
 
   await stripe.subscriptionItems.update(sub.items.data[0].id, {

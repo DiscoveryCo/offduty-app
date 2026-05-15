@@ -3,11 +3,9 @@ import { getGmailClient, ensureHoldLabel, releaseEmails, stopWatch, registerWatc
 
 export function isAllowedToHold(
   user: { subscriptionStatus: string; trialEndsAt: Date | null },
-  inbox?: { trialEndsAt?: Date | null }
 ): boolean {
   if (user.subscriptionStatus === "active") return true
   if (user.subscriptionStatus === "trialing" && user.trialEndsAt && user.trialEndsAt > new Date()) return true
-  if (inbox?.trialEndsAt && inbox.trialEndsAt > new Date()) return true
   return false
 }
 
@@ -188,31 +186,6 @@ export async function enforceTrialExpiry() {
         console.log(`[trialExpiry] Deactivated inbox ${inbox.email} — trial ended`)
       } catch (err) {
         console.error(`[trialExpiry] Failed to deactivate inbox ${inbox.email}:`, err)
-      }
-    })
-  )
-}
-
-export async function enforceInboxTrialExpiry() {
-  const expiredInboxes = await prisma.inbox.findMany({
-    where: {
-      isActive: true,
-      trialEndsAt: { lte: new Date() },
-      user: { subscriptionStatus: { not: "active" } },
-    },
-    include: { user: true },
-  })
-
-  await Promise.allSettled(
-    expiredInboxes.map(async (inbox) => {
-      try {
-        const gmail = await getGmailClient(inbox)
-        if (inbox.holdLabelId) await releaseEmails(gmail, inbox.holdLabelId)
-        await stopWatch(gmail)
-        await prisma.inbox.update({ where: { id: inbox.id }, data: { isActive: false } })
-        console.log(`[inboxTrialExpiry] Deactivated ${inbox.email}`)
-      } catch (err) {
-        console.error(`[inboxTrialExpiry] Failed for ${inbox.email}:`, err)
       }
     })
   )

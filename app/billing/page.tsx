@@ -137,15 +137,7 @@ export default async function BillingPage({
           monthlyPriceId={process.env.STRIPE_PRICE_MONTHLY!}
           annualPriceId={process.env.STRIPE_PRICE_ANNUAL!}
           subDetails={subDetails}
-          inboxes={user.inboxes.map((i) => ({
-            id: i.id,
-            email: i.email,
-            name: i.name,
-            image: i.image,
-            isPrimary: i.isPrimary,
-            trialEndsAt: i.trialEndsAt?.toISOString() ?? null,
-            scheduledRemovalAt: i.scheduledRemovalAt?.toISOString() ?? null,
-          }))}
+          inboxCount={user.inboxes.length}
         />
       </main>
 

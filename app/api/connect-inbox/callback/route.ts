@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db"
 import { google } from "googleapis"
 import { cookies } from "next/headers"
 import { getGmailClient, ensureHoldLabel } from "@/lib/gmail"
+import { stripe } from "@/lib/stripe"
 
 export async function GET(req: NextRequest) {
   const session = await auth()
@@ -44,10 +45,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard?error=inbox_connect_failed", process.env.NEXTAUTH_URL!))
     }
 
-    const ownerUser = await prisma.user.findUnique({ where: { email: session.user.email } })
+    const ownerUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: { inboxes: true },
+    })
     if (!ownerUser) {
       return NextResponse.redirect(new URL("/dashboard?error=inbox_connect_failed", process.env.NEXTAUTH_URL!))
     }
+
+    const isSubscribed = ownerUser.subscriptionStatus === "active"
+    const existingInbox = ownerUser.inboxes.find((i) => i.email === profile.email)
 
     const inbox = await prisma.inbox.upsert({
       where: { email: profile.email },
@@ -69,10 +76,32 @@ export async function GET(req: NextRequest) {
         refreshToken: tokens.refresh_token,
         tokenExpiry: tokens.expiry_date ? new Date(tokens.expiry_date) : null,
         isPrimary: false,
-        trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         settings: { create: {} },
       },
     })
+
+    // If user is subscribed and this is a genuinely new inbox, increment Stripe quantity
+    if (isSubscribed && !existingInbox && ownerUser.stripeCustomerId) {
+      try {
+        const subscriptions = await stripe.subscriptions.list({
+          customer: ownerUser.stripeCustomerId,
+          status: "active",
+          limit: 1,
+        })
+        const sub = subscriptions.data[0]
+        if (sub) {
+          const currentPaidCount = ownerUser.inboxes.filter((i) => !i.scheduledRemovalAt).length
+          const newQuantity = currentPaidCount + 1
+          await stripe.subscriptionItems.update(sub.items.data[0].id, {
+            quantity: newQuantity,
+            proration_behavior: "always_invoice",
+          })
+        }
+      } catch (err) {
+        console.error("connect-inbox: failed to increment Stripe quantity", err)
+        // non-fatal — inbox is created, billing will self-correct
+      }
+    }
 
     // Create the hold label so it's ready when the user enables holding
     const gmail = await getGmailClient(inbox)

@@ -1,11 +1,21 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
-import { Mail, ArrowLeft, ShieldCheck } from "lucide-react"
+import { prisma } from "@/lib/db"
+import { Mail, ArrowLeft, ShieldCheck, AlertCircle } from "lucide-react"
 
 export default async function ConnectInboxPage() {
   const session = await auth()
   if (!session?.user?.email) redirect("/login")
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { inboxes: { select: { id: true } } },
+  })
+  if (!user) redirect("/login")
+
+  const isSubscribed = user.subscriptionStatus === "active"
+  const showBillingWarning = isSubscribed && user.inboxes.length > 0
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -29,6 +39,15 @@ export default async function ConnectInboxPage() {
           <p className="text-sm text-[#4D4D4D] mb-6">
             DiscoveryMail will request permission to manage your Gmail inbox. This allows it to hold and release emails on a schedule.
           </p>
+
+          {showBillingWarning && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-start gap-3">
+              <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-700">
+                Adding this inbox will add <strong>$3.49/mo</strong> (or <strong>$33.59/yr</strong> on annual) to your subscription, billed immediately with proration.
+              </p>
+            </div>
+          )}
 
           <ul className="space-y-3 mb-8">
             {[
@@ -55,7 +74,7 @@ export default async function ConnectInboxPage() {
             href="/api/connect-inbox"
             className="w-full flex items-center justify-center gap-2 bg-[#A78BFA] hover:bg-[#8B5CF6] text-white text-sm font-medium px-5 py-3 rounded-lg transition-colors"
           >
-            Continue with Google
+            {showBillingWarning ? "Confirm & continue with Google" : "Continue with Google"}
           </a>
 
           <Link

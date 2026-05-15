@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { signOut } from "next-auth/react"
 import { Trash2, X } from "lucide-react"
-import Link from "next/link"
 
 interface Inbox {
   id: string
@@ -15,27 +14,42 @@ interface Inbox {
   isActive: boolean
   isPrimary: boolean
   isPaidSeat: boolean
+  scheduledRemovalAt: string | null
 }
 
 // ── Remove a single non-primary inbox ──────────────────────────────────────
 
 export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
-  const [confirming, setConfirming] = useState(false)
+  const [mode, setMode] = useState<"idle" | "confirm-deactivate" | "confirm-remove">("idle")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  if (inbox.isPaidSeat) {
-    return (
-      <Link href="/billing" className="text-xs text-[#4D4D4D] hover:text-[#A78BFA] transition-colors">
-        Manage in billing
-      </Link>
-    )
+  async function handleDeactivate() {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/billing/remove-inbox", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inboxId: inbox.id }),
+      })
+      if (!res.ok) throw new Error()
+      toast.success(`${inbox.email} will be removed at the end of your billing period`)
+      router.refresh()
+    } catch {
+      toast.error("Failed to deactivate inbox")
+    } finally {
+      setLoading(false)
+      setMode("idle")
+    }
   }
 
   async function handleRemove() {
     setLoading(true)
     try {
-      const res = await fetch(`/api/inbox?inboxId=${inbox.id}`, { method: "DELETE" })
+      const url = inbox.isPaidSeat
+        ? `/api/inbox?inboxId=${inbox.id}&force=true`
+        : `/api/inbox?inboxId=${inbox.id}`
+      const res = await fetch(url, { method: "DELETE" })
       if (!res.ok) throw new Error()
       toast.success(`${inbox.email} removed`)
       router.refresh()
@@ -43,26 +57,74 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
       toast.error("Failed to remove inbox")
     } finally {
       setLoading(false)
-      setConfirming(false)
+      setMode("idle")
     }
   }
 
-  if (confirming) {
+  // Scheduled for removal — just show status
+  if (inbox.scheduledRemovalAt) {
+    return (
+      <span className="text-xs text-amber-600">Removing at period end</span>
+    )
+  }
+
+  if (mode === "confirm-deactivate") {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs text-[#4D4D4D]">Remove this inbox?</span>
+        <span className="text-xs text-[#4D4D4D]">Remove at period end?</span>
         <button
-          onClick={handleRemove}
+          onClick={handleDeactivate}
           disabled={loading}
           className="text-xs bg-[#F43F5E] hover:bg-[#d93652] text-white px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50"
         >
-          {loading ? "Removing…" : "Yes, remove"}
+          {loading ? "Removing…" : "Confirm"}
         </button>
-        <button
-          onClick={() => setConfirming(false)}
-          className="text-[#4D4D4D] hover:text-[#4D4D4D]"
-        >
+        <button onClick={() => setMode("idle")} className="text-[#4D4D4D] hover:text-[#4D4D4D]">
           <X className="w-4 h-4" />
+        </button>
+      </div>
+    )
+  }
+
+  if (mode === "confirm-remove") {
+    return (
+      <div className="flex flex-col items-end gap-2">
+        <p className="text-xs text-[#4D4D4D] text-right max-w-[200px]">
+          {inbox.isPaidSeat
+            ? "Removes now. No refund for this period."
+            : "Remove this inbox?"}
+        </p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRemove}
+            disabled={loading}
+            className="text-xs bg-[#F43F5E] hover:bg-[#d93652] text-white px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50"
+          >
+            {loading ? "Removing…" : "Yes, remove"}
+          </button>
+          <button onClick={() => setMode("idle")} className="text-[#4D4D4D] hover:text-[#4D4D4D]">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (inbox.isPaidSeat) {
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setMode("confirm-deactivate")}
+          className="text-xs text-[#4D4D4D] hover:text-amber-600 transition-colors"
+        >
+          Deactivate
+        </button>
+        <span className="text-[#E5E7EB]">·</span>
+        <button
+          onClick={() => setMode("confirm-remove")}
+          className="text-xs text-[#4D4D4D] hover:text-[#F43F5E] transition-colors"
+        >
+          Remove
         </button>
       </div>
     )
@@ -70,7 +132,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
 
   return (
     <button
-      onClick={() => setConfirming(true)}
+      onClick={() => setMode("confirm-remove")}
       className="text-xs text-[#4D4D4D] hover:text-[#F43F5E] transition-colors"
     >
       Remove

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (!inbox) return NextResponse.json({ error: "Inbox not found" }, { status: 404 })
 
   // Block activation if trial has expired and no active subscription
-  if (!inbox.isActive && !isAllowedToHold(inbox.user, inbox)) {
+  if (!inbox.isActive && !isAllowedToHold(inbox.user)) {
     return NextResponse.json({ error: "subscription_required" }, { status: 403 })
   }
 
