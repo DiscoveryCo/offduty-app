@@ -84,12 +84,14 @@ export default async function BillingPage({
         const card = pm?.type === "card" ? pm.card : null
 
         // For flat prices: unit_amount * quantity
-        // For tiered/graduated prices: unit_amount is null, calculate from tiers
+        // For tiered/graduated prices: unit_amount is null — retrieve price directly to get tiers
         let totalAmount: number
         if (price.unit_amount !== null && price.unit_amount !== undefined) {
           totalAmount = price.unit_amount * quantity
         } else {
-          const tiers = (price as unknown as { tiers?: { up_to: number | null; unit_amount: number | null; flat_amount: number | null }[] }).tiers ?? []
+          const fullPrice = await stripe.prices.retrieve(price.id)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const tiers = (fullPrice as any).tiers ?? []
           totalAmount = calculateGraduatedTotal(tiers, quantity)
         }
 
