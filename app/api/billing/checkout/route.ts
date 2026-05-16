@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
     success_url: `${baseUrl}/billing?success=1`,
     cancel_url: `${baseUrl}/billing?canceled=1`,
     allow_promotion_codes: true,
+    payment_method_collection: "if_required",
     subscription_data: {
       metadata: { userId: user.id },
     },
