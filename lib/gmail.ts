@@ -2,7 +2,8 @@ import { google } from "googleapis"
 import { prisma } from "@/lib/db"
 import type { Inbox, VipRule } from "@/lib/generated/prisma/client"
 
-const HOLD_LABEL_NAME = "DiscoveryMail-Hold"
+const HOLD_LABEL_NAME = "Offduty-Hold"
+const LEGACY_HOLD_LABEL_NAME = "DiscoveryMail-Hold"
 
 const oauthClientCache = new Map<string, InstanceType<typeof google.auth.OAuth2>>()
 
@@ -61,6 +62,18 @@ export async function ensureHoldLabel(
   if (found?.id) {
     await prisma.inbox.update({ where: { id: inboxId }, data: { holdLabelId: found.id } })
     return found.id
+  }
+
+  // Migrate legacy label if present — Gmail renames in place, no emails lost
+  const legacy = data.labels?.find((l) => l.name === LEGACY_HOLD_LABEL_NAME)
+  if (legacy?.id) {
+    await gmail.users.labels.update({
+      userId: "me",
+      id: legacy.id,
+      requestBody: { name: HOLD_LABEL_NAME },
+    })
+    await prisma.inbox.update({ where: { id: inboxId }, data: { holdLabelId: legacy.id } })
+    return legacy.id
   }
 
   const created = await gmail.users.labels.create({
