@@ -57,7 +57,7 @@ export function HeldEmailsCard({ heldCount, isActive, pausedUntil }: Props) {
         )
       ) : (
         <p className="text-sm text-[#4D4D4D]">
-          DiscoveryMail is off. Start it to begin holding emails.
+          Offduty is off. Start it to begin holding emails.
         </p>
       )}
       {isActive && !isPaused && (

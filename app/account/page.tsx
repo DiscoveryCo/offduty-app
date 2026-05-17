@@ -3,7 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { Mail, ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { UserMenu } from "@/components/UserMenu"
 import { format } from "date-fns"
 import { RemoveInboxButton, DeleteAccountButton } from "@/components/AccountClient"
@@ -46,9 +46,8 @@ export default async function AccountPage() {
         <Link href="/dashboard" className="text-[#4D4D4D] hover:text-[#4D4D4D]">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-75 transition-opacity">
-          <Mail className="w-5 h-5 text-[#A78BFA]" />
-          <span className="font-bold text-lg tracking-tight text-[#161616]">DiscoveryMail</span>
+        <Link href="/dashboard" className="hover:opacity-75 transition-opacity">
+          <img src="/offduty-logo.svg" alt="Offduty" className="h-7" />
         </Link>
         <div className="ml-auto">
           <UserMenu email={user.email} image={user.image ?? null} settingsHref="/settings" />
@@ -151,8 +150,8 @@ export default async function AccountPage() {
       {/* Footer */}
       <footer className="border-t border-[#E5E7EB] py-6 px-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Mail className="w-4 h-4 text-[#A78BFA]" />
-          <span className="text-sm font-semibold text-[#161616]">DiscoveryMail</span>
+          <img src="/offduty-icon.svg" alt="" className="w-5 h-5" />
+          <span className="text-sm font-semibold text-[#161616]">Offduty</span>
         </div>
         <span className="text-xs text-[#4D4D4D]">© {new Date().getFullYear()}</span>
       </footer>

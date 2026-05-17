@@ -157,7 +157,7 @@ export function BillingClient({
                   </span>
                 </p>
               ) : (
-                <p className="text-[#161616] font-medium">DiscoveryMail — Active</p>
+                <p className="text-[#161616] font-medium">Offduty — Active</p>
               )}
               {subDetails?.cancelAtPeriodEnd && (
                 <p className="text-xs text-amber-600 mt-1">
@@ -262,7 +262,7 @@ export function BillingClient({
       <p className="text-xs text-[#4D4D4D] text-center mb-4 italic">All prices are in USD.</p>
 
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
-        <h3 className="text-xl font-bold text-[#161616] text-center mb-4">DiscoveryMail</h3>
+        <h3 className="text-xl font-bold text-[#161616] text-center mb-4">Offduty</h3>
 
         {/* Price */}
         <div className="text-center mb-4">

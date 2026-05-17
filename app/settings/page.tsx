@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { Mail, ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { VipSettings } from "@/components/VipSettings"
 import { DeliverySettings } from "@/components/DeliverySettings"
 import { UserMenu } from "@/components/UserMenu"
@@ -68,9 +68,8 @@ async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string
           <Link href={dashboardHref} className="text-[#4D4D4D] hover:text-[#4D4D4D]">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <Link href={dashboardHref} className="flex items-center gap-2 hover:opacity-75 transition-opacity">
-            <Mail className="w-5 h-5 text-[#A78BFA]" />
-            <span className="font-bold text-lg tracking-tight text-[#161616]">DiscoveryMail</span>
+          <Link href={dashboardHref} className="hover:opacity-75 transition-opacity">
+            <img src="/offduty-logo.svg" alt="Offduty" className="h-7" />
           </Link>
         </div>
         <div className="flex justify-center">
@@ -145,8 +144,8 @@ async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string
       {/* Footer */}
       <footer className="border-t border-[#E5E7EB] py-6 px-6 flex items-center justify-between mt-10">
         <div className="flex items-center gap-2">
-          <Mail className="w-4 h-4 text-[#A78BFA]" />
-          <span className="text-sm font-semibold text-[#161616]">DiscoveryMail</span>
+          <img src="/offduty-icon.svg" alt="" className="w-5 h-5" />
+          <span className="text-sm font-semibold text-[#161616]">Offduty</span>
         </div>
         <div className="flex gap-5 text-xs text-[#4D4D4D]">
           <span>© {new Date().getFullYear()}</span>

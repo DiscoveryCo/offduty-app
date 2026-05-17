@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { Mail, ArrowLeft, ShieldCheck, AlertCircle } from "lucide-react"
+import { ArrowLeft, ShieldCheck, AlertCircle } from "lucide-react"
 
 export default async function ConnectInboxPage() {
   const session = await auth()
@@ -23,9 +23,8 @@ export default async function ConnectInboxPage() {
         <Link href="/dashboard" className="text-[#4D4D4D] hover:text-[#4D4D4D]">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-75 transition-opacity">
-          <Mail className="w-5 h-5 text-[#A78BFA]" />
-          <span className="font-bold text-lg tracking-tight text-[#161616]">DiscoveryMail</span>
+        <Link href="/dashboard" className="hover:opacity-75 transition-opacity">
+          <img src="/offduty-logo.svg" alt="Offduty" className="h-7" />
         </Link>
       </header>
 
@@ -37,7 +36,7 @@ export default async function ConnectInboxPage() {
 
           <h1 className="text-xl font-bold text-[#161616] mb-2">Connect another inbox</h1>
           <p className="text-sm text-[#4D4D4D] mb-6">
-            DiscoveryMail will request permission to manage your Gmail inbox. This allows it to hold and release emails on a schedule.
+            Offduty will request permission to manage your Gmail inbox. This allows it to hold and release emails on a schedule.
           </p>
 
           {showBillingWarning && (
@@ -67,7 +66,7 @@ export default async function ConnectInboxPage() {
           </ul>
 
           <p className="text-xs text-[#4D4D4D] mb-6">
-            DiscoveryMail only uses these permissions to batch your email. Your data is never shared.
+            Offduty only uses these permissions to batch your email. Your data is never shared.
           </p>
 
           <a

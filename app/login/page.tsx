@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation"
 import { auth, signIn } from "@/lib/auth"
-import { Mail } from "lucide-react"
 
 export default async function LoginPage() {
   const session = await auth()
@@ -9,10 +8,7 @@ export default async function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex flex-col items-center gap-8 w-full max-w-sm shadow-sm">
-        <div className="flex items-center gap-2">
-          <Mail className="w-7 h-7 text-[#A78BFA]" />
-          <span className="text-2xl font-bold tracking-tight text-[#161616]">DiscoveryMail</span>
-        </div>
+        <img src="/offduty-logo.svg" alt="Offduty" className="h-10" />
         <p className="text-[#4D4D4D] text-sm text-center leading-relaxed">
           Batch your Gmail inbox on your schedule.
           <br />
@@ -51,7 +47,7 @@ export default async function LoginPage() {
           </button>
         </form>
         <p className="text-[#4D4D4D] text-xs text-center">
-          DiscoveryMail requests access to read and modify your Gmail so it can
+          Offduty requests access to read and modify your Gmail so it can
           hold and release emails on schedule.
         </p>
       </div>
