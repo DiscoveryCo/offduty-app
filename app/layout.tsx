@@ -11,6 +11,7 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: "Offduty",
   description: "Batch your Gmail inbox on your schedule",
+  icons: { icon: "/favicon.png" },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
