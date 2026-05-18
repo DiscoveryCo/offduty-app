@@ -182,7 +182,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
                 disabled={loading !== null}
                 className="w-full text-left px-4 py-2.5 text-sm text-[#F43F5E] hover:bg-amber-100 transition-colors disabled:opacity-50"
               >
-                stop offduty
+                Stop offduty
               </button>
             </div>
           )}
@@ -198,7 +198,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
             className="flex items-center gap-2 bg-[#F43F5E] hover:bg-[#d93652] text-white text-sm font-medium pl-4 pr-3 py-2 rounded-l-lg transition-colors disabled:opacity-50"
           >
             <StopCircle className="w-4 h-4" />
-            {loading === "toggle" ? "Stopping…" : "stop offduty"}
+            {loading === "toggle" ? "Stopping…" : "Stop offduty"}
           </button>
           <button
             onClick={() => setDropdownOpen((o) => !o)}
@@ -237,7 +237,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
           className="flex items-center gap-2 bg-[#A78BFA] hover:bg-[#8B5CF6] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
           <Play className="w-4 h-4" />
-          {loading === "toggle" ? "Starting…" : "start offduty"}
+          {loading === "toggle" ? "Starting…" : "Start offduty"}
         </button>
       )}
     </div>
