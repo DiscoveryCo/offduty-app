@@ -191,6 +191,14 @@ export async function enforceTrialExpiry() {
   )
 }
 
+export async function purgeOldActivityLogs() {
+  const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) // 90 days
+  const { count } = await prisma.activityLog.deleteMany({
+    where: { deliveredAt: { lt: cutoff } },
+  })
+  if (count > 0) console.log(`[purgeActivityLogs] Deleted ${count} log entries older than 90 days`)
+}
+
 export async function enforceScheduledRemovals() {
   const inboxes = await prisma.inbox.findMany({
     where: { scheduledRemovalAt: { lte: new Date() } },
