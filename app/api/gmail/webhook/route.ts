@@ -56,23 +56,34 @@ export async function POST(req: NextRequest) {
       const msg = item.message
       if (!msg?.id) continue
 
-      const full = await gmail.users.messages.get({
-        userId: "me",
-        id: msg.id,
-        format: "metadata",
-        metadataHeaders: ["From", "Subject"],
-      })
+      try {
+        const full = await gmail.users.messages.get({
+          userId: "me",
+          id: msg.id,
+          format: "metadata",
+          metadataHeaders: ["From", "Subject"],
+        })
 
-      const headers = full.data.payload?.headers ?? []
-      const from = headers.find((h) => h.name === "From")?.value ?? ""
-      const subject = headers.find((h) => h.name === "Subject")?.value ?? ""
-      const snippet = full.data.snippet ?? ""
+        const headers = full.data.payload?.headers ?? []
+        const from = headers.find((h) => h.name === "From")?.value ?? ""
+        const subject = headers.find((h) => h.name === "Subject")?.value ?? ""
+        const snippet = full.data.snippet ?? ""
 
-      if (!isVip(from, subject, snippet, inbox.vipRules)) {
-        await holdEmail(gmail, msg.id, holdLabelId)
+        if (!isVip(from, subject, snippet, inbox.vipRules)) {
+          await holdEmail(gmail, msg.id, holdLabelId)
+        }
+      } catch (msgErr: unknown) {
+        // Message was deleted/trashed before we could process it — skip and continue
+        const code = (msgErr as { code?: number })?.code
+        if (code === 404) {
+          console.log(`webhook: message ${msg.id} not found (deleted/trashed), skipping`)
+        } else {
+          console.error(`webhook: error processing message ${msg.id}`, msgErr)
+        }
       }
     }
 
+    // Always advance historyId so a bad message can never freeze the webhook
     if (data.historyId) {
       await prisma.inbox.update({
         where: { id: inbox.id },
