@@ -44,7 +44,14 @@ export async function DELETE() {
     }
   }
 
-  // Deleting the user cascades to all inboxes, settings, schedules, rules, logs
+  // Delete all child records explicitly before deleting the user,
+  // in case database-level cascades were not applied via migration.
+  const inboxIds = user.inboxes.map((i) => i.id)
+  await prisma.activityLog.deleteMany({ where: { inboxId: { in: inboxIds } } })
+  await prisma.vipRule.deleteMany({ where: { inboxId: { in: inboxIds } } })
+  await prisma.schedule.deleteMany({ where: { inboxId: { in: inboxIds } } })
+  await prisma.settings.deleteMany({ where: { inboxId: { in: inboxIds } } })
+  await prisma.inbox.deleteMany({ where: { id: { in: inboxIds } } })
   await prisma.user.delete({ where: { id: user.id } })
 
   return NextResponse.json({ ok: true })
