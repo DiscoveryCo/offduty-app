@@ -9,7 +9,7 @@ const geist = Geist({
 })
 
 export const metadata: Metadata = {
-  title: "Offduty",
+  title: "offduty",
   description: "Batch your Gmail inbox on your schedule",
   icons: { icon: "/favicon.png" },
 }
