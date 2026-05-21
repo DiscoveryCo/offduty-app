@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "offduty",
   description: "Batch your Gmail inbox on your schedule",
   icons: { icon: "/favicon.png" },
+  formatDetection: { email: false, telephone: false, address: false },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
