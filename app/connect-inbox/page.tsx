@@ -51,7 +51,7 @@ export default async function ConnectInboxPage() {
 
           <ul className="space-y-3 mb-8">
             {[
-              "Read, compose and send emails from your Gmail account",
+              "Read and modify your emails",
               "Create a label to hold emails",
               "Receive notifications when new emails arrive",
             ].map((item) => (
