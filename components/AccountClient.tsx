@@ -224,7 +224,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
 
 // ── Delete entire account ───────────────────────────────────────────────────
 
-export function DeleteAccountButton() {
+export function DeleteAccountButton({ subscriptionStatus }: { subscriptionStatus?: string }) {
   const [confirming, setConfirming] = useState(false)
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
@@ -264,7 +264,10 @@ export function DeleteAccountButton() {
     <div className="space-y-3 p-4 bg-[#fff1f3] border border-[#fda4af] rounded-xl">
       <p className="text-sm text-[#be1d37]">
         This will release all held emails, remove all your data, and cannot be undone.
-        Type <strong>DELETE</strong> to confirm.
+        {(subscriptionStatus === "active" || subscriptionStatus === "trialing") && (
+          <> Your subscription will be cancelled immediately and you will not be charged again.</>
+        )}
+        {" "}Type <strong>DELETE</strong> to confirm.
       </p>
       <input
         value={input}

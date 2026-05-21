@@ -144,7 +144,7 @@ export default async function AccountPage() {
             Permanently deletes your account and all {user.inboxes.length} connected{" "}
             {user.inboxes.length === 1 ? "inbox" : "inboxes"}. This cannot be undone.
           </p>
-          <DeleteAccountButton />
+          <DeleteAccountButton subscriptionStatus={subStatus} />
         </div>
       </main>
 
