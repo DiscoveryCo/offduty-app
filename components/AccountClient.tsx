@@ -153,13 +153,13 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
   if (mode === "confirm-deactivate") {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs text-[#4D4D4D]">Remove at period end?</span>
+        <span className="text-xs text-[#4D4D4D]">Cancel at period end?</span>
         <button
           onClick={handleDeactivate}
           disabled={loading}
           className="text-xs bg-[#F43F5E] hover:bg-[#d93652] text-white px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50"
         >
-          {loading ? "Removing…" : "Confirm"}
+          {loading ? "Cancelling…" : "Confirm"}
         </button>
         <button onClick={() => setMode("idle")} className="text-[#4D4D4D]">
           <X className="w-4 h-4" />
@@ -173,7 +173,7 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
       <div className="flex flex-col items-end gap-2">
         <p className="text-xs text-[#4D4D4D] text-right max-w-[200px]">
           {inbox.isPaidSeat
-            ? "Removes now. No refund for this period."
+            ? "Removes immediately. No refund for remaining time."
             : "Remove this inbox?"}
         </p>
         <div className="flex items-center gap-2">
@@ -199,14 +199,14 @@ export function RemoveInboxButton({ inbox }: { inbox: Inbox }) {
           onClick={() => setMode("confirm-deactivate")}
           className="text-xs text-[#4D4D4D] hover:text-amber-600 transition-colors"
         >
-          Deactivate
+          Cancel at period end
         </button>
         <span className="text-[#E5E7EB]">·</span>
         <button
           onClick={() => setMode("confirm-remove")}
           className="text-xs text-[#4D4D4D] hover:text-[#F43F5E] transition-colors"
         >
-          Remove
+          Remove immediately
         </button>
       </div>
     )
