@@ -53,9 +53,24 @@ export default async function LoginPage() {
             Sign in with Google
           </button>
         </form>
+        <ul className="w-full space-y-3">
+          {[
+            "Read and modify your emails",
+            "Create a label to hold emails",
+            "Receive notifications when new emails arrive",
+          ].map((item) => (
+            <li key={item} className="flex items-start gap-3 text-sm text-[#161616]">
+              <span className="mt-0.5 w-4 h-4 rounded-full bg-[#A78BFA] flex-shrink-0 flex items-center justify-center">
+                <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 8">
+                  <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              {item}
+            </li>
+          ))}
+        </ul>
         <p className="text-[#4D4D4D] text-xs text-center">
-          Offduty requests access to read and modify your Gmail so it can
-          hold and release emails on schedule.
+          Your data is never shared. Only used to hold and release your emails.
         </p>
       </div>
     </div>
