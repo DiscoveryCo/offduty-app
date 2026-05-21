@@ -234,9 +234,15 @@ export function DeleteAccountButton() {
     setLoading(true)
     try {
       const res = await fetch("/api/account", { method: "DELETE" })
-      if (!res.ok) throw new Error()
+      if (!res.ok) {
+        // If the server responded at all, the user record may have been deleted
+        // before the error occurred. Sign out to avoid a session/DB mismatch loop.
+        await signOut({ callbackUrl: "/login" })
+        return
+      }
       await signOut({ callbackUrl: "/login" })
     } catch {
+      // Network error — server was not reached, safe to show error without signing out
       toast.error("Failed to delete account")
       setLoading(false)
     }

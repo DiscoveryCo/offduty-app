@@ -1,9 +1,13 @@
 import { redirect } from "next/navigation"
 import { auth, signIn } from "@/lib/auth"
+import { prisma } from "@/lib/db"
 
 export default async function LoginPage() {
   const session = await auth()
-  if (session) redirect("/dashboard")
+  if (session?.user?.email) {
+    const user = await prisma.user.findUnique({ where: { email: session.user.email }, select: { id: true } })
+    if (user) redirect("/dashboard")
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
