@@ -155,7 +155,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
         )}
 
         {/* Profile + actions */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             {fullInbox.image && (
               <Image src={fullInbox.image} alt="" width={52} height={52} className="rounded-xl" />
