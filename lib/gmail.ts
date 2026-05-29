@@ -33,13 +33,17 @@ function getOAuth2Client(inbox: Inbox) {
     expiry_date: inbox.tokenExpiry ? inbox.tokenExpiry.getTime() : undefined,
   })
   oauth2.on("tokens", async (tokens) => {
-    await prisma.inbox.update({
-      where: { id: inbox.id },
-      data: {
-        accessToken: tokens.access_token ? encryptToken(tokens.access_token) : inbox.accessToken,
-        tokenExpiry: tokens.expiry_date ? new Date(tokens.expiry_date) : inbox.tokenExpiry,
-      },
-    })
+    try {
+      await prisma.inbox.update({
+        where: { id: inbox.id },
+        data: {
+          accessToken: tokens.access_token ? encryptToken(tokens.access_token) : inbox.accessToken,
+          tokenExpiry: tokens.expiry_date ? new Date(tokens.expiry_date) : inbox.tokenExpiry,
+        },
+      })
+    } catch {
+      // Inbox may have been deleted (e.g. during account deletion) — ignore.
+    }
   })
   oauthClientCache.set(inbox.id, oauth2)
   return oauth2
