@@ -26,7 +26,8 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' https://accounts.google.com",
+      // unsafe-inline required for Next.js hydration bootstrap scripts
+      "script-src 'self' 'unsafe-inline' https://accounts.google.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https://lh3.googleusercontent.com",
       "font-src 'self'",
