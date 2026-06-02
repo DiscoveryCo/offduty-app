@@ -41,6 +41,9 @@ export function middleware(request: NextRequest) {
   response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
   response.headers.set("Cross-Origin-Opener-Policy", "same-origin")
   response.headers.set("Cross-Origin-Resource-Policy", "same-origin")
+  // lh3.googleusercontent.com (Google avatars) returns CORP: cross-origin
+  // so require-corp is safe — cross-origin resources that don't opt in are blocked
+  response.headers.set("Cross-Origin-Embedder-Policy", "require-corp")
 
   return response
 }
