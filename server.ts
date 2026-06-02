@@ -32,6 +32,16 @@ app.prepare().then(() => {
 
   const port = parseInt(process.env.PORT ?? "3000", 10)
   createServer((req, res) => {
+    // Apply security headers to every response at the server level.
+    // Middleware handles the CSP (with per-request nonce) and covers HTML
+    // pages, but Next.js serves /_next/static/ files before middleware runs.
+    // Setting headers here ensures static assets also carry these headers.
+    res.setHeader("X-Content-Type-Options", "nosniff")
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()")
+    res.setHeader("Cross-Origin-Resource-Policy", "same-origin")
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin")
+
     const parsedUrl = parse(req.url!, true)
     handle(req, res, parsedUrl)
   }).listen(port, () => {
