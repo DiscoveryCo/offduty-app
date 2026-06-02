@@ -33,6 +33,8 @@ const securityHeaders = [
       "frame-src https://accounts.google.com",
       "connect-src 'self' https://www.googleapis.com",
       "frame-ancestors 'none'",
+      // Restrict where forms can submit — only this origin and Google OAuth
+      "form-action 'self' https://accounts.google.com",
     ].join("; "),
   },
   // Prevent other sites sharing a browsing context with this app (Spectre mitig.)
