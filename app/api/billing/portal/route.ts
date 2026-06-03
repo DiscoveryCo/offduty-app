@@ -19,28 +19,27 @@ export async function POST(req: NextRequest) {
   const { flow } = await req.json().catch(() => ({ flow: null }))
   const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
 
-  let flowData: Parameters<typeof stripe.billingPortal.sessions.create>[0]["flow_data"] | undefined
-
-  if (flow === "payment_method_update") {
-    flowData = { type: "payment_method_update" }
-  } else if (flow === "subscription_update") {
+  let subscriptionId: string | undefined
+  if (flow === "subscription_update") {
     const subscriptions = await stripe.subscriptions.list({
       customer: user.stripeCustomerId,
       limit: 1,
     })
-    const subId = subscriptions.data[0]?.id
-    if (subId) {
-      flowData = {
-        type: "subscription_update",
-        subscription_update: { subscription: subId },
-      }
-    }
+    subscriptionId = subscriptions.data[0]?.id
   }
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: user.stripeCustomerId,
     return_url: `${baseUrl}/billing`,
-    ...(flowData && { flow_data: flowData }),
+    ...(flow === "payment_method_update" && {
+      flow_data: { type: "payment_method_update" },
+    }),
+    ...(flow === "subscription_update" && subscriptionId && {
+      flow_data: {
+        type: "subscription_update",
+        subscription_update: { subscription: subscriptionId },
+      },
+    }),
   })
 
   return NextResponse.json({ url: portalSession.url })
