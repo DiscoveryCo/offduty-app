@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, Star, CreditCard, RefreshCw } from "lucide-react"
+import { Check, Star, CreditCard, RefreshCw, ExternalLink } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -22,7 +22,6 @@ const FEATURES_ANNUAL_EXTRA = [
 
 interface SubDetails {
   interval: "month" | "year"
-  amount: number
   periodEnd: string
   cancelAtPeriodEnd: boolean
   cardBrand: string | null
@@ -47,7 +46,7 @@ export function BillingClient({
   inboxCount,
 }: Props) {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly")
-  const [loading, setLoading] = useState<null | "checkout" | "updateCard" | "invoices" | "cancel" | "resume">(null)
+  const [loading, setLoading] = useState<null | "checkout" | "updateCard" | "invoices" | "adjustPlan" | "cancel" | "resume">(null)
   const [confirming, setConfirming] = useState(false)
   const router = useRouter()
 
@@ -106,6 +105,24 @@ export function BillingClient({
     }
   }
 
+  async function handleAdjustPlan() {
+    setLoading("adjustPlan")
+    try {
+      const res = await fetch("/api/billing/portal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) throw new Error(data.error ?? "Failed")
+      setLoading(null)
+      window.location.href = data.url
+    } catch {
+      toast.error("Could not open billing portal. Please try again.")
+      setLoading(null)
+    }
+  }
+
   async function handleCancel() {
     setLoading("cancel")
     try {
@@ -137,8 +154,7 @@ export function BillingClient({
 
   // ── Active subscription view ──────────────────────────────────────────────
   if (hasActiveSubscription) {
-    const price = subDetails ? (subDetails.amount / 100).toFixed(2) : null
-    const intervalLabel = subDetails?.interval === "year" ? "year" : "month"
+    const intervalLabel = subDetails?.interval === "year" ? "Annual" : "Monthly"
 
     return (
       <div className="space-y-4">
@@ -147,17 +163,15 @@ export function BillingClient({
           <h2 className="font-semibold text-[#161616] mb-4">Plan</h2>
           <div className="flex items-center justify-between">
             <div>
-              {price ? (
-                <p className="text-[#161616] font-medium">
-                  <span className="font-bold">${price}/{intervalLabel}</span>
-                  <span className="text-[#4D4D4D] font-normal ml-2">
-                    {subDetails!.cancelAtPeriodEnd
-                      ? `Access until ${subDetails!.periodEnd}`
-                      : `Renews ${subDetails!.periodEnd}`}
-                  </span>
+              <p className="text-[#161616] font-medium">
+                offduty — {intervalLabel}
+              </p>
+              {subDetails && (
+                <p className="text-sm text-[#4D4D4D] mt-1">
+                  {subDetails.cancelAtPeriodEnd
+                    ? `Access until ${subDetails.periodEnd}`
+                    : `Renews ${subDetails.periodEnd}`}
                 </p>
-              ) : (
-                <p className="text-[#161616] font-medium">Offduty — Active</p>
               )}
               {subDetails?.cancelAtPeriodEnd && (
                 <p className="text-xs text-amber-600 mt-1">
@@ -171,39 +185,43 @@ export function BillingClient({
                 </Link>
               </p>
             </div>
-            {subDetails?.cancelAtPeriodEnd ? (
-              <button
-                onClick={handleResume}
-                disabled={loading === "resume"}
-                className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
-              >
-                {loading === "resume" ? "Loading…" : "Resume membership"}
-              </button>
-            ) : !subDetails ? null : confirming ? (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-[#4D4D4D]">Cancel at period end?</span>
+            <div className="flex items-center gap-2">
+              {subDetails?.cancelAtPeriodEnd ? (
                 <button
-                  onClick={handleCancel}
-                  disabled={loading === "cancel"}
-                  className="text-xs bg-[#F43F5E] hover:bg-[#d93652] text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                  onClick={handleResume}
+                  disabled={loading === "resume"}
+                  className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                 >
-                  {loading === "cancel" ? "Canceling…" : "Yes, cancel"}
+                  {loading === "resume" ? "Loading…" : "Resume membership"}
                 </button>
+              ) : confirming ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[#4D4D4D]">Cancel at period end?</span>
+                  <button
+                    onClick={handleCancel}
+                    disabled={loading === "cancel"}
+                    className="text-xs bg-[#F43F5E] hover:bg-[#d93652] text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {loading === "cancel" ? "Canceling…" : "Yes, cancel"}
+                  </button>
+                  <button
+                    onClick={() => setConfirming(false)}
+                    className="text-xs text-[#4D4D4D] hover:text-[#4D4D4D] transition-colors"
+                  >
+                    Keep
+                  </button>
+                </div>
+              ) : (
                 <button
-                  onClick={() => setConfirming(false)}
-                  className="text-xs text-[#4D4D4D] hover:text-[#4D4D4D] transition-colors"
+                  onClick={handleAdjustPlan}
+                  disabled={loading === "adjustPlan"}
+                  className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
                 >
-                  Keep
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  {loading === "adjustPlan" ? "Loading…" : "Adjust Plan"}
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setConfirming(true)}
-                className="text-sm text-[#4D4D4D] hover:text-[#F43F5E] transition-colors"
-              >
-                Cancel
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </div>
 

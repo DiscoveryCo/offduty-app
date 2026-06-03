@@ -8,22 +8,6 @@ import { format } from "date-fns"
 import { BillingClient } from "@/components/BillingClient"
 import { UserMenu } from "@/components/UserMenu"
 
-function calculateGraduatedTotal(
-  tiers: { up_to: number | null; unit_amount: number | null; flat_amount: number | null }[],
-  quantity: number,
-): number {
-  let total = 0
-  let remaining = quantity
-  for (const tier of tiers) {
-    if (remaining <= 0) break
-    const cap = tier.up_to ?? Infinity
-    const inTier = tier.up_to === null ? remaining : Math.min(remaining, cap)
-    total += (tier.unit_amount ?? 0) * inTier + (tier.flat_amount ?? 0)
-    remaining -= inTier
-  }
-  return total
-}
-
 export default async function BillingPage({
   searchParams,
 }: {
@@ -55,7 +39,6 @@ export default async function BillingPage({
   // Fetch live subscription details from Stripe if subscribed
   let subDetails: {
     interval: "month" | "year"
-    amount: number
     periodEnd: string
     cancelAtPeriodEnd: boolean
     cardBrand: string | null
@@ -67,13 +50,12 @@ export default async function BillingPage({
       const subscriptions = await stripe.subscriptions.list({
         customer: user.stripeCustomerId,
         limit: 1,
-        expand: ["data.items.data.price", "data.default_payment_method", "data.discounts"],
+        expand: ["data.items.data.price", "data.default_payment_method"],
       })
       const sub = subscriptions.data[0]
       if (sub) {
         const item = sub.items.data[0]
         const price = item.price
-        const quantity = item.quantity ?? 1
         const periodEnd = item.current_period_end
           ? format(new Date(item.current_period_end * 1000), "MMMM d, yyyy")
           : null
@@ -81,34 +63,8 @@ export default async function BillingPage({
         const pm = sub.default_payment_method as import("stripe").Stripe.PaymentMethod | null
         const card = pm?.type === "card" ? pm.card : null
 
-        // Retrieve the price with tiers explicitly expanded (not returned by default)
-        const fullPrice = await stripe.prices.retrieve(price.id, { expand: ["tiers"] })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const tiers = (fullPrice as any).tiers as { up_to: number | null; unit_amount: number | null; flat_amount: number | null }[] | undefined
-
-        let totalAmount: number
-        if (fullPrice.unit_amount !== null && fullPrice.unit_amount !== undefined) {
-          totalAmount = fullPrice.unit_amount * quantity
-        } else if (tiers && tiers.length > 0) {
-          totalAmount = calculateGraduatedTotal(tiers, quantity)
-        } else {
-          totalAmount = 0
-        }
-
-        // Apply coupon discount if present (check both array and deprecated singular field)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const coupon = (sub.discounts as any)?.[0]?.coupon ?? (sub as any).discount?.coupon
-        if (coupon) {
-          if (coupon.percent_off) {
-            totalAmount = Math.round(totalAmount * (1 - coupon.percent_off / 100))
-          } else if (coupon.amount_off) {
-            totalAmount = Math.max(0, totalAmount - coupon.amount_off)
-          }
-        }
-
         subDetails = {
           interval: price.recurring?.interval as "month" | "year" ?? "month",
-          amount: totalAmount,
           periodEnd: periodEnd ?? "",
           cancelAtPeriodEnd: sub.cancel_at_period_end,
           cardBrand: card?.brand ?? null,
