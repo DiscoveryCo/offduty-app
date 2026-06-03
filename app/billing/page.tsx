@@ -52,7 +52,7 @@ export default async function BillingPage({
       const subscriptions = await stripe.subscriptions.list({
         customer: user.stripeCustomerId,
         limit: 1,
-        expand: ["data.items.data.price", "data.default_payment_method"],
+        expand: ["data.items.data.price", "data.default_payment_method", "data.schedule"],
       })
       const sub = subscriptions.data[0]
       if (sub) {
@@ -65,15 +65,32 @@ export default async function BillingPage({
         const pm = sub.default_payment_method as import("stripe").Stripe.PaymentMethod | null
         const card = pm?.type === "card" ? pm.card : null
 
+        // Detect cancellation via any of three Stripe mechanisms:
+        // 1. cancel_at_period_end flag (direct API / in-app cancel)
+        // 2. cancel_at timestamp (specific future cancellation)
+        // 3. subscription schedule with end_behavior: cancel (portal plan-switching flow)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const schedule = sub.schedule as any
+        const scheduledToCancel = schedule != null && schedule.end_behavior === "cancel"
+        const willCancel = sub.cancel_at_period_end || sub.cancel_at != null || scheduledToCancel
+
+        console.log("[billing] sub.id:", sub.id,
+          "cancel_at_period_end:", sub.cancel_at_period_end,
+          "cancel_at:", sub.cancel_at,
+          "schedule:", schedule?.id ?? null,
+          "schedule.end_behavior:", schedule?.end_behavior ?? null,
+          "willCancel:", willCancel)
+
         subDetails = {
           interval: price.recurring?.interval as "month" | "year" ?? "month",
           periodEnd: periodEnd ?? "",
-          cancelAtPeriodEnd: sub.cancel_at_period_end,
+          cancelAtPeriodEnd: willCancel,
           cardBrand: card?.brand ?? null,
           cardLast4: card?.last4 ?? null,
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("[billing] Stripe fetch error:", err)
       // non-fatal — fall back to basic view
     }
   }
