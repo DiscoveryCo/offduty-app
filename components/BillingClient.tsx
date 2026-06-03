@@ -183,11 +183,12 @@ export function BillingClient({
             <div className="flex items-center gap-2">
               {subDetails?.cancelAtPeriodEnd ? (
                 <button
-                  onClick={handleResume}
-                  disabled={loading === "resume"}
-                  className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                  onClick={handleAdjustPlan}
+                  disabled={loading === "adjustPlan"}
+                  className="text-sm bg-[#ededff] hover:bg-[#dcdcff] text-[#A78BFA] font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
                 >
-                  {loading === "resume" ? "Loading…" : "Resume membership"}
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  {loading === "adjustPlan" ? "Loading…" : "Resume membership"}
                 </button>
               ) : confirming ? (
                 <div className="flex items-center gap-2">
