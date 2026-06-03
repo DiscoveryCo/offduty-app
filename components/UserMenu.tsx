@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { ChevronDown, CreditCard, LayoutDashboard, LogOut, Settings, User } from "lucide-react"
+import { logoutAction } from "@/app/actions/auth"
 
 interface Props {
   email: string
@@ -70,12 +71,7 @@ export function UserMenu({ email, image, settingsHref, dashboardHref = "/dashboa
             Billing
           </a>
           <div className="border-t border-gray-100" />
-          <form
-            action={async () => {
-              const { signOut } = await import("next-auth/react")
-              await signOut({ callbackUrl: "/login" })
-            }}
-          >
+          <form action={logoutAction}>
             <button
               type="submit"
               className="w-full flex items-center gap-2 px-4 py-3 text-sm text-[#4D4D4D] hover:bg-gray-50 transition-colors"
