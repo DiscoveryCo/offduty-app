@@ -74,13 +74,6 @@ export default async function BillingPage({
         const scheduledToCancel = schedule != null && schedule.end_behavior === "cancel"
         const willCancel = sub.cancel_at_period_end || sub.cancel_at != null || scheduledToCancel
 
-        console.log("[billing] sub.id:", sub.id,
-          "cancel_at_period_end:", sub.cancel_at_period_end,
-          "cancel_at:", sub.cancel_at,
-          "schedule:", schedule?.id ?? null,
-          "schedule.end_behavior:", schedule?.end_behavior ?? null,
-          "willCancel:", willCancel)
-
         subDetails = {
           interval: price.recurring?.interval as "month" | "year" ?? "month",
           periodEnd: periodEnd ?? "",
@@ -89,8 +82,7 @@ export default async function BillingPage({
           cardLast4: card?.last4 ?? null,
         }
       }
-    } catch (err) {
-      console.error("[billing] Stripe fetch error:", err)
+    } catch {
       // non-fatal — fall back to basic view
     }
   }
