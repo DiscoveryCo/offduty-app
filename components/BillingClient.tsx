@@ -111,7 +111,7 @@ export function BillingClient({
       const res = await fetch("/api/billing/portal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ flow: "subscription_update" }),
+        body: JSON.stringify({}),
       })
       const data = await res.json()
       if (!res.ok || !data.url) throw new Error(data.error ?? "Failed")
