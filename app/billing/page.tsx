@@ -43,6 +43,8 @@ export default async function BillingPage({
     interval: "month" | "year"
     periodEnd: string
     cancelAtPeriodEnd: boolean
+    switchingTo: "monthly" | "annual" | null
+    switchDate: string | null
     cardBrand: string | null
     cardLast4: string | null
   } | null = null
@@ -74,10 +76,33 @@ export default async function BillingPage({
         const scheduledToCancel = schedule != null && schedule.end_behavior === "cancel"
         const willCancel = sub.cancel_at_period_end || sub.cancel_at != null || scheduledToCancel
 
+        // Detect scheduled plan switch via subscription schedule next phase
+        let switchingTo: "monthly" | "annual" | null = null
+        let switchDate: string | null = null
+        if (!willCancel && schedule != null && Array.isArray(schedule.phases)) {
+          const now = Math.floor(Date.now() / 1000)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const nextPhase = schedule.phases.find((p: any) => p.start_date > now)
+          if (nextPhase?.items?.length > 0) {
+            const rawPrice = nextPhase.items[0].price
+            const nextPriceId = typeof rawPrice === "string" ? rawPrice : rawPrice?.id
+            if (nextPriceId === process.env.STRIPE_PRICE_MONTHLY) {
+              switchingTo = "monthly"
+            } else if (nextPriceId === process.env.STRIPE_PRICE_ANNUAL) {
+              switchingTo = "annual"
+            }
+            if (switchingTo && nextPhase.start_date) {
+              switchDate = format(new Date(nextPhase.start_date * 1000), "MMMM d, yyyy")
+            }
+          }
+        }
+
         subDetails = {
           interval: price.recurring?.interval as "month" | "year" ?? "month",
           periodEnd: periodEnd ?? "",
           cancelAtPeriodEnd: willCancel,
+          switchingTo,
+          switchDate,
           cardBrand: card?.brand ?? null,
           cardLast4: card?.last4 ?? null,
         }

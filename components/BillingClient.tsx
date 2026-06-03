@@ -24,6 +24,8 @@ interface SubDetails {
   interval: "month" | "year"
   periodEnd: string
   cancelAtPeriodEnd: boolean
+  switchingTo: "monthly" | "annual" | null
+  switchDate: string | null
   cardBrand: string | null
   cardLast4: string | null
 }
@@ -167,10 +169,12 @@ export function BillingClient({
                 offduty — {intervalLabel}
               </p>
               {subDetails && (
-                <p className="text-sm mt-1" style={{ color: subDetails.cancelAtPeriodEnd ? "#d97706" : "#4D4D4D" }}>
+                <p className="text-sm mt-1" style={{ color: subDetails.cancelAtPeriodEnd ? "#d97706" : subDetails.switchingTo ? "#6B7280" : "#4D4D4D" }}>
                   {subDetails.cancelAtPeriodEnd
                     ? `Expires ${subDetails.periodEnd}`
-                    : `Renews ${subDetails.periodEnd}`}
+                    : subDetails.switchingTo
+                      ? `Switches to ${subDetails.switchingTo === "monthly" ? "Monthly" : "Annual"} on ${subDetails.switchDate}`
+                      : `Renews ${subDetails.periodEnd}`}
                 </p>
               )}
               <p className="text-xs text-[#4D4D4D] mt-2">
