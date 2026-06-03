@@ -167,15 +167,10 @@ export function BillingClient({
                 offduty — {intervalLabel}
               </p>
               {subDetails && (
-                <p className="text-sm text-[#4D4D4D] mt-1">
+                <p className="text-sm mt-1" style={{ color: subDetails.cancelAtPeriodEnd ? "#d97706" : "#4D4D4D" }}>
                   {subDetails.cancelAtPeriodEnd
-                    ? `Access until ${subDetails.periodEnd}`
+                    ? `Expires ${subDetails.periodEnd}`
                     : `Renews ${subDetails.periodEnd}`}
-                </p>
-              )}
-              {subDetails?.cancelAtPeriodEnd && (
-                <p className="text-xs text-amber-600 mt-1">
-                  Your subscription is set to cancel at the end of this period.
                 </p>
               )}
               <p className="text-xs text-[#4D4D4D] mt-2">
