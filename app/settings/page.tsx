@@ -148,8 +148,10 @@ async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string
           <img src="/offduty-icon.svg" alt="" className="w-5 h-5" />
           <span className="text-sm font-bold text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
         </div>
-        <div className="flex gap-5 text-xs text-[#4D4D4D]">
+        <div className="flex items-center gap-4 text-xs text-[#9CA3AF]">
           <span>© {new Date().getFullYear()} DiscoveryCo</span>
+          <a href="https://offduty.me/terms" target="_blank" rel="noopener noreferrer" className="hover:text-[#4D4D4D] transition-colors">Terms</a>
+          <a href="https://offduty.me/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-[#4D4D4D] transition-colors">Privacy</a>
         </div>
       </footer>
     </div>

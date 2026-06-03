@@ -250,7 +250,11 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
           <img src="/offduty-icon.svg" alt="" className="w-5 h-5" />
           <span className="text-sm font-bold text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
         </div>
-        <span className="text-xs text-[#4D4D4D]">© {new Date().getFullYear()} DiscoveryCo</span>
+        <div className="flex items-center gap-4 text-xs text-[#9CA3AF]">
+          <span>© {new Date().getFullYear()} DiscoveryCo</span>
+          <a href="https://offduty.me/terms" target="_blank" rel="noopener noreferrer" className="hover:text-[#4D4D4D] transition-colors">Terms</a>
+          <a href="https://offduty.me/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-[#4D4D4D] transition-colors">Privacy</a>
+        </div>
       </footer>
     </div>
   )
