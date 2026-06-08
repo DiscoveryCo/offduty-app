@@ -275,7 +275,7 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
         {/* Header — flex-shrink-0 so it never scrolls away */}
         <div className="flex-shrink-0 bg-white border-b border-[#E5E7EB] px-6 py-4 flex items-start justify-between gap-4">
           <div>
-            <p className="text-xl font-bold text-[#7C3AED] mb-0.5">🎉 One-time setup</p>
+            <p className="text-xl font-bold text-[#A68BFA] mb-0.5">🎉 One-time setup</p>
             <h2 className="text-xl font-bold text-[#161616]">When should email arrive?</h2>
             <p className="text-sm text-[#4D4D4D] mt-1">
               offduty is now holding your inbox. Set when you'd like email to land.
