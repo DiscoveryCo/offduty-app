@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Plus, Clock } from "lucide-react"
+import { X, Plus } from "lucide-react"
 import { toast } from "sonner"
 
 type ScheduleType = "interval" | "times" | "custom_daily" | "custom_weekly"
@@ -198,10 +198,6 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
         {/* Header — flex-shrink-0 so it never scrolls away */}
         <div className="flex-shrink-0 bg-white border-b border-[#E5E7EB] px-6 py-4 flex items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-4 h-4 text-[#A78BFA]" />
-              <p className="text-xs font-semibold text-[#A78BFA] uppercase tracking-wider">Step 1 of 1</p>
-            </div>
             <h2 className="text-xl font-bold text-[#161616]">When should email arrive?</h2>
             <p className="text-sm text-[#4D4D4D] mt-1">
               offduty is now holding your inbox. Set when you'd like email to land.
