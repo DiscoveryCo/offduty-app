@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import Image from "next/image"
 import { DashboardActions } from "@/components/DashboardClient"
+import { OnboardingModal } from "@/components/OnboardingModal"
 import { UserMenu } from "@/components/UserMenu"
 import { InboxSwitcher } from "@/components/InboxSwitcher"
 import { getGmailClient, getHeldCount } from "@/lib/gmail"
@@ -49,6 +50,12 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
   })
   if (!user) redirect("/login")
   if (user.inboxes.length === 0) redirect("/login")
+
+  // hasOnboarded added via raw SQL migration — read it directly
+  const onboardingRows = await prisma.$queryRaw<{ hasOnboarded: boolean }[]>`
+    SELECT "hasOnboarded" FROM "User" WHERE id = ${user.id}
+  `
+  const hasOnboarded = onboardingRows[0]?.hasOnboarded ?? false
 
   const inbox = inboxId
     ? await prisma.inbox.findFirst({ where: { id: inboxId, userId: user.id } })
@@ -101,6 +108,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {fullInbox.isActive && <AutoRefresh intervalMs={30000} />}
+      {!hasOnboarded && <OnboardingModal inboxId={fullInbox.id} />}
       {/* Header */}
       <header className="bg-white border-b border-[#E5E7EB] px-6 py-3 grid grid-cols-3 items-center">
         <div className="flex items-center gap-2">
