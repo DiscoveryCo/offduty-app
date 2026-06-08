@@ -108,6 +108,9 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
   const [weeklySchedule, setWeeklySchedule] = useState<DaySchedule[]>(
     [0, 1, 2, 3, 4, 5, 6].map((d) => ({ dayOfWeek: d, times: [] }))
   )
+  const [dndEnabled, setDndEnabled] = useState(false)
+  const [dndFrom, setDndFrom] = useState("22:00")
+  const [dndTo, setDndTo] = useState("07:00")
 
   // Auto-detect timezone on mount
   useEffect(() => {
@@ -161,7 +164,9 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
             scheduleType,
             intervalHours: scheduleType === "interval" ? intervalHours : null,
             timesPerDay: scheduleType === "times" ? timesPerDay : null,
-            dndEnabled: false,
+            dndEnabled,
+            dndFrom: dndEnabled ? dndFrom : null,
+            dndTo: dndEnabled ? dndTo : null,
             timezone,
           }),
         }),
@@ -344,6 +349,42 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Do Not Disturb */}
+          <div className="border border-[#E5E7EB] rounded-xl p-4 bg-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-[#161616]">Do Not Disturb</p>
+                <p className="text-xs text-[#4D4D4D] mt-0.5">No deliveries during this window, even if your schedule says so</p>
+              </div>
+              <button
+                role="switch"
+                aria-checked={dndEnabled}
+                onClick={() => setDndEnabled(!dndEnabled)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${dndEnabled ? "bg-[#A78BFA]" : "bg-[#E5E7EB]"}`}
+              >
+                <span className={`inline-block w-4 h-4 bg-white rounded-full shadow transition-transform ${dndEnabled ? "translate-x-6" : "translate-x-1"}`} />
+              </button>
+            </div>
+            {dndEnabled && (
+              <div className="flex items-center gap-3 mt-3">
+                <span className="text-sm text-[#4D4D4D]">From</span>
+                <input
+                  type="time"
+                  value={dndFrom}
+                  onChange={(e) => setDndFrom(e.target.value)}
+                  className="border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-sm"
+                />
+                <span className="text-sm text-[#4D4D4D]">To</span>
+                <input
+                  type="time"
+                  value={dndTo}
+                  onChange={(e) => setDndTo(e.target.value)}
+                  className="border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-sm"
+                />
+              </div>
+            )}
           </div>
         </div>
 
