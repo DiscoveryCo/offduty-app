@@ -129,3 +129,15 @@
     font-family: var(--font-geist), sans-serif;
   }
 }
+
+@keyframes onboarding-confetti {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  75%  { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3); opacity: 0; }
+}
+.onboarding-confetti-piece {
+  position: fixed;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: onboarding-confetti var(--dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}

@@ -1,8 +1,24 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import { createPortal } from "react-dom"
 import { X, Plus } from "lucide-react"
 import { toast } from "sonner"
+
+const CONFETTI_COLOURS = ["#A78BFA", "#8B5CF6", "#F43F5E", "#FB7185", "#FCD34D", "#E879F9", "#C4B5FD"]
+
+type ConfettiParticle = {
+  id: number
+  x: number
+  y: number
+  colour: string
+  tx: string
+  ty: string
+  rot: string
+  w: number
+  h: number
+  dur: string
+}
 
 type ScheduleType = "interval" | "times" | "custom_daily" | "custom_weekly"
 
@@ -99,6 +115,8 @@ function AddTimeButton({ onAdd }: { onAdd: (time: string) => void }) {
 export function OnboardingModal({ inboxId }: { inboxId: string }) {
   const [visible, setVisible] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [particles, setParticles] = useState<ConfettiParticle[]>([])
+  const saveButtonRef = useRef<HTMLButtonElement>(null)
 
   const [timezone, setTimezone] = useState("UTC")
   const [scheduleType, setScheduleType] = useState<ScheduleType>("custom_daily")
@@ -143,6 +161,35 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
     return []
   }
 
+  function spawnConfetti() {
+    const btn = saveButtonRef.current
+    if (!btn) return
+    const rect = btn.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+
+    const newParticles: ConfettiParticle[] = Array.from({ length: 48 }, (_, i) => {
+      const angle = Math.random() * Math.PI * 2
+      // Bias trajectory upward so it fans out nicely from the button
+      const speed = 100 + Math.random() * 220
+      const w = 6 + Math.random() * 8
+      return {
+        id: Date.now() + i,
+        x: cx + (Math.random() - 0.5) * 30,
+        y: cy + (Math.random() - 0.5) * 10,
+        colour: CONFETTI_COLOURS[Math.floor(Math.random() * CONFETTI_COLOURS.length)],
+        tx: `${(Math.cos(angle) * speed).toFixed(1)}px`,
+        ty: `${(Math.sin(angle) * speed - 90).toFixed(1)}px`,
+        rot: `${(Math.random() - 0.5) * 900}deg`,
+        w,
+        h: w * (0.4 + Math.random() * 0.7),
+        dur: `${(0.7 + Math.random() * 0.7).toFixed(2)}s`,
+      }
+    })
+    setParticles(newParticles)
+    setTimeout(() => setParticles([]), 1600)
+  }
+
   async function markDone() {
     await fetch("/api/complete-onboarding", { method: "POST" })
   }
@@ -178,17 +225,42 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
       ])
       if (!s1.ok || !s2.ok) throw new Error()
       await markDone()
+      spawnConfetti()
       toast.success("Schedule saved — offduty is ready to go.")
-      setVisible(false)
+      // Brief delay so confetti is visible before the modal fades out
+      setTimeout(() => setVisible(false), 600)
     } catch {
       toast.error("Failed to save. You can set your schedule in Settings.")
       setSaving(false)
     }
   }
 
-  if (!visible) return null
+  if (!visible && particles.length === 0) return null
 
   return (
+    <>
+    {typeof document !== "undefined" && particles.length > 0 && createPortal(
+      particles.map((p) => (
+        <div
+          key={p.id}
+          className="onboarding-confetti-piece"
+          style={{
+            left: p.x,
+            top: p.y,
+            width: p.w,
+            height: p.h,
+            backgroundColor: p.colour,
+            "--tx": p.tx,
+            "--ty": p.ty,
+            "--rot": p.rot,
+            "--dur": p.dur,
+            zIndex: 9999,
+          } as React.CSSProperties}
+        />
+      )),
+      document.body
+    )}
+    {!visible ? null :
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
@@ -203,6 +275,9 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
         {/* Header — flex-shrink-0 so it never scrolls away */}
         <div className="flex-shrink-0 bg-white border-b border-[#E5E7EB] px-6 py-4 flex items-start justify-between gap-4">
           <div>
+            <span className="inline-flex items-center gap-1.5 bg-[#f5f3ff] border border-[#e9d5ff] text-[#7C3AED] text-xs font-semibold px-2.5 py-1 rounded-full mb-2.5">
+              🎉 One-time setup
+            </span>
             <h2 className="text-xl font-bold text-[#161616]">When should email arrive?</h2>
             <p className="text-sm text-[#4D4D4D] mt-1">
               offduty is now holding your inbox. Set when you'd like email to land.
@@ -397,6 +472,7 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
             Skip for now
           </button>
           <button
+            ref={saveButtonRef}
             onClick={handleSave}
             disabled={saving}
             className="bg-[#A78BFA] hover:bg-[#8B5CF6] text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors disabled:opacity-50"
@@ -406,5 +482,7 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
         </div>
       </div>
     </div>
+    }
+    </>
   )
 }
