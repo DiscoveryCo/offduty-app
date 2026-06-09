@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { X, Plus } from "lucide-react"
 import { toast } from "sonner"
+import posthog from "posthog-js"
 
 const CONFETTI_COLOURS = ["#A78BFA", "#8B5CF6", "#F43F5E", "#FB7185", "#FCD34D", "#E879F9", "#C4B5FD"]
 
@@ -195,6 +196,7 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
   }
 
   async function handleSkip() {
+    posthog.capture("onboarding_skipped", { inbox_id: inboxId })
     await markDone()
     setVisible(false)
   }
@@ -225,6 +227,7 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
       ])
       if (!s1.ok || !s2.ok) throw new Error()
       await markDone()
+      posthog.capture("onboarding_schedule_saved", { inbox_id: inboxId, schedule_type: scheduleType })
       spawnConfetti()
       toast.success("Schedule saved — offduty is ready to go.")
       // Brief delay so confetti is visible before the modal fades out

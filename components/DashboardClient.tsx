@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import posthog from "posthog-js"
 import { Truck, StopCircle, Play, ChevronDown, PauseCircle } from "lucide-react"
 import { format, addHours, setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns"
 
@@ -68,6 +69,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error)
+      posthog.capture("deliver_now", { inbox_id: inboxId, email_count: json.count })
       toast.success(`Delivered ${json.count} email${json.count === 1 ? "" : "s"}`)
       router.refresh()
     } catch {
@@ -94,6 +96,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
       setIsActive(json.isActive)
       setPausedUntil(null)
       setPausedDropdownOpen(false)
+      posthog.capture(json.isActive ? "offduty_started" : "offduty_stopped", { inbox_id: inboxId })
       toast.success(json.isActive ? "Offduty started" : "Offduty stopped — inbox restored")
       router.refresh()
     } catch {
@@ -114,6 +117,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
       })
       if (!res.ok) throw new Error()
       setPausedUntil(until)
+      posthog.capture("inbox_paused", { inbox_id: inboxId, until: until.toISOString() })
       toast.success(`Paused until ${format(until, "h:mm a")}`)
       router.refresh()
     } catch {
@@ -133,6 +137,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
       })
       if (!res.ok) throw new Error()
       setPausedUntil(null)
+      posthog.capture("inbox_resumed", { inbox_id: inboxId })
       toast.success("Resumed — inbox is being held again")
       router.refresh()
     } catch {
