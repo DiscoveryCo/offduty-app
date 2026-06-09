@@ -1,0 +1,63 @@
+{
+  "name": "offduty — Add new user to MailerLite",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "offduty-new-user",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-a1b2c3d40001",
+      "name": "New User Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "a1b2c3d4-0001-0001-0001-a1b2c3d40001"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://connect.mailerlite.com/api/subscribers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ email: $json.body.email, fields: { name: $json.body.name }, groups: ['REPLACE_WITH_YOUR_MAILERLITE_GROUP_ID'] }) }}",
+        "options": {}
+      },
+      "id": "b2c3d4e5-0002-0002-0002-b2c3d4e50002",
+      "name": "Add to MailerLite",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "MailerLite API Key"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "New User Webhook": {
+      "main": [
+        [
+          {
+            "node": "Add to MailerLite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "instanceId": ""
+  },
+  "tags": []
+}

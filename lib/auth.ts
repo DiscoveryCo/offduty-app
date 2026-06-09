@@ -43,6 +43,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           },
         })
 
+        const isNewUser = Date.now() - dbUser.createdAt.getTime() < 10_000
+        if (isNewUser && process.env.N8N_WEBHOOK_URL) {
+          fetch(process.env.N8N_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email, name: user.name }),
+          }).catch(() => {})
+        }
+
         await prisma.inbox.upsert({
           where: { email: user.email },
           update: {
