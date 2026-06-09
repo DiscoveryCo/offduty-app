@@ -44,12 +44,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
 
         const isNewUser = Date.now() - dbUser.createdAt.getTime() < 10_000
+        console.log("[signIn] isNewUser:", isNewUser, "webhookUrl:", process.env.N8N_WEBHOOK_URL ?? "not set")
         if (isNewUser && process.env.N8N_WEBHOOK_URL) {
           fetch(process.env.N8N_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: user.email, name: user.name }),
-          }).catch(() => {})
+          })
+            .then((r) => console.log("[signIn] N8N webhook response:", r.status))
+            .catch((e) => console.error("[signIn] N8N webhook error:", e))
         }
 
         await prisma.inbox.upsert({
