@@ -64,6 +64,20 @@ export async function POST(req: NextRequest) {
           metadataHeaders: ["From", "Subject"],
         })
 
+        const labelIds = full.data.labelIds ?? []
+        // Only hold genuine inbound mail. Skip the user's own messages
+        // (SENT/DRAFT) and anything no longer in the inbox (already archived,
+        // trashed, or spam) — holding those would wrongly resurface them on
+        // the next delivery. A reply you send sits in the same inbox thread,
+        // so it appears in this history feed carrying the INBOX label; without
+        // this guard it gets held and bounced back to you later.
+        const skipLabels = ["SENT", "DRAFT", "TRASH", "SPAM", "CHAT"]
+        const shouldConsider =
+          labelIds.includes("INBOX") && !skipLabels.some((l) => labelIds.includes(l))
+        if (!shouldConsider) {
+          continue
+        }
+
         const headers = full.data.payload?.headers ?? []
         const from = headers.find((h) => h.name === "From")?.value ?? ""
         const subject = headers.find((h) => h.name === "Subject")?.value ?? ""
