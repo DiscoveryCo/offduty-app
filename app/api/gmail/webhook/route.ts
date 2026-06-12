@@ -61,24 +61,22 @@ export async function POST(req: NextRequest) {
           userId: "me",
           id: msg.id,
           format: "metadata",
-          metadataHeaders: ["From", "Subject"],
+          metadataHeaders: ["From", "Subject", "To"],
         })
 
         const labelIds = full.data.labelIds ?? []
-        // Only hold genuine inbound mail. Skip the user's own messages
-        // (SENT/DRAFT) and anything no longer in the inbox (already archived,
-        // trashed, or spam) — holding those would wrongly resurface them on
-        // the next delivery. A reply you send sits in the same inbox thread,
-        // so it appears in this history feed carrying the INBOX label; without
-        // this guard it gets held and bounced back to you later.
-        const skipLabels = ["SENT", "DRAFT", "TRASH", "SPAM", "CHAT"]
+        const headers = full.data.payload?.headers ?? []
+        const to = headers.find((h) => h.name === "To")?.value ?? ""
+        // Self-sent emails carry both SENT and INBOX. Treat them as inbound
+        // (hold them) by checking whether the To address matches the inbox owner.
+        const hasSentOrDraft = labelIds.includes("SENT") || labelIds.includes("DRAFT")
+        const isSentToSelf = hasSentOrDraft && to.toLowerCase().includes(inbox.email.toLowerCase())
         const shouldConsider =
-          labelIds.includes("INBOX") && !skipLabels.some((l) => labelIds.includes(l))
+          labelIds.includes("INBOX") && (!hasSentOrDraft || isSentToSelf)
         if (!shouldConsider) {
           continue
         }
 
-        const headers = full.data.payload?.headers ?? []
         const from = headers.find((h) => h.name === "From")?.value ?? ""
         const subject = headers.find((h) => h.name === "Subject")?.value ?? ""
         const snippet = full.data.snippet ?? ""
