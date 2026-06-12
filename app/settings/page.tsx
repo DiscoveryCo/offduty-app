@@ -48,7 +48,7 @@ async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string
     .map((s) => s.time)
     .sort()
 
-  const weeklySchedule = [0, 1, 2, 3, 4, 5, 6].map((day) => ({
+  const weeklySchedule = [1, 2, 3, 4, 5, 6, 0].map((day) => ({
     dayOfWeek: day,
     times: fullInbox.schedules
       .filter((s) => s.dayOfWeek === day)

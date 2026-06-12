@@ -125,7 +125,7 @@ export function OnboardingModal({ inboxId }: { inboxId: string }) {
   const [timesPerDay, setTimesPerDay] = useState(2)
   const [customDailyTimes, setCustomDailyTimes] = useState<string[]>([])
   const [weeklySchedule, setWeeklySchedule] = useState<DaySchedule[]>(
-    [0, 1, 2, 3, 4, 5, 6].map((d) => ({ dayOfWeek: d, times: [] }))
+    [1, 2, 3, 4, 5, 6, 0].map((d) => ({ dayOfWeek: d, times: [] }))
   )
   const [dndEnabled, setDndEnabled] = useState(false)
   const [dndFrom, setDndFrom] = useState("22:00")
