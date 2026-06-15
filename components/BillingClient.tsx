@@ -62,6 +62,7 @@ export function BillingClient({
         body: JSON.stringify({ priceId, quantity: inboxCount }),
       })
       const data = await res.json()
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); setLoading(null); return }
       if (!res.ok || !data.url) throw new Error(data.error ?? "Failed")
       setLoading(null)
       window.location.href = data.url
@@ -80,6 +81,7 @@ export function BillingClient({
         body: JSON.stringify({ flow: "payment_method_update" }),
       })
       const data = await res.json()
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); setLoading(null); return }
       if (!res.ok || !data.url) throw new Error(data.error ?? "Failed")
       setLoading(null)
       window.location.href = data.url
@@ -98,6 +100,7 @@ export function BillingClient({
         body: JSON.stringify({}),
       })
       const data = await res.json()
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); setLoading(null); return }
       if (!res.ok || !data.url) throw new Error(data.error ?? "Failed")
       setLoading(null)
       window.location.href = data.url
@@ -116,6 +119,7 @@ export function BillingClient({
         body: JSON.stringify({}),
       })
       const data = await res.json()
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); setLoading(null); return }
       if (!res.ok || !data.url) throw new Error(data.error ?? "Failed")
       setLoading(null)
       window.location.href = data.url

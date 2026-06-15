@@ -68,6 +68,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
         body: JSON.stringify({ inboxId }),
       })
       const json = await res.json()
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); return }
       if (!res.ok) throw new Error(json.error)
       posthog.capture("deliver_now", { inbox_id: inboxId, email_count: json.count })
       toast.success(`Delivered ${json.count} email${json.count === 1 ? "" : "s"}`)
@@ -88,6 +89,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
         body: JSON.stringify({ inboxId }),
       })
       const json = await res.json()
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); return }
       if (res.status === 403 && json.error === "subscription_required") {
         router.push("/billing")
         return
@@ -115,6 +117,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ inboxId, until: until.toISOString() }),
       })
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); return }
       if (!res.ok) throw new Error()
       setPausedUntil(until)
       posthog.capture("inbox_paused", { inbox_id: inboxId, until: until.toISOString() })
@@ -135,6 +138,7 @@ export function DashboardActions({ isActive: initialActive, inboxId, pausedUntil
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ inboxId, until: null }),
       })
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); return }
       if (!res.ok) throw new Error()
       setPausedUntil(null)
       posthog.capture("inbox_resumed", { inbox_id: inboxId })

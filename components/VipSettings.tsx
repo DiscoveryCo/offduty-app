@@ -67,6 +67,7 @@ export function VipSettings({ inboxId, domains: initDomains, emails: initEmails,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ inboxId, domains, emails, keywords }),
       })
+      if (res.status === 429) { toast.error("Too many requests — please wait a moment and try again."); return }
       if (!res.ok) throw new Error()
       toast.success("VIP settings saved")
     } catch {

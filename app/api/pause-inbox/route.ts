@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { getGmailClient, ensureHoldLabel, releaseEmails } from "@/lib/gmail"
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit"
 
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!rateLimit(`pause-inbox:${session.user.email}`, 15, 60_000)) return tooManyRequests()
 
   const { inboxId, until } = await req.json().catch(() => ({}))
   if (!inboxId) return NextResponse.json({ error: "Missing inboxId" }, { status: 400 })

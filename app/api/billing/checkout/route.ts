@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { stripe, getOrCreateCustomer } from "@/lib/stripe"
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit"
 
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+  if (!rateLimit(`checkout:${session.user.email}`, 5, 60_000)) return tooManyRequests()
 
   const { priceId, quantity } = await req.json()
   if (!priceId) {

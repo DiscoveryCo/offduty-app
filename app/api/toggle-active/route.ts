@@ -9,12 +9,14 @@ import {
   stopWatch,
 } from "@/lib/gmail"
 import { isAllowedToHold } from "@/lib/scheduler"
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit"
 
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+  if (!rateLimit(`toggle-active:${session.user.email}`, 15, 60_000)) return tooManyRequests()
 
   const { inboxId } = await req.json().catch(() => ({}))
 

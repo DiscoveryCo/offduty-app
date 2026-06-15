@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit"
 
 export async function GET(req: NextRequest) {
   const session = await auth()
@@ -27,6 +28,7 @@ export async function PUT(req: NextRequest) {
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+  if (!rateLimit(`vip:${session.user.email}`, 30, 60_000)) return tooManyRequests()
 
   const body = await req.json()
   const { inboxId, domains = [], emails = [], keywords = [] } = body
