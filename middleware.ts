@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
     "img-src 'self' data: https://lh3.googleusercontent.com",
     "font-src 'self'",
     "frame-src https://accounts.google.com",
-    "connect-src 'self' https://www.googleapis.com",
+    `connect-src 'self' https://www.googleapis.com ${process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com"}`,
     "frame-ancestors 'none'",
     "form-action 'self' https://accounts.google.com",
   ].join("; ")

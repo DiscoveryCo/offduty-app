@@ -20,10 +20,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      console.log("[signIn] called, email:", user.email, "provider:", account?.provider)
-      if (!user.email) { console.log("[signIn] no email, denying"); return false }
+      if (!user.email) return false
       try {
-        console.log("[signIn] upserting user and primary inbox...")
         const trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
 
         const dbUser = await prisma.user.upsert({
@@ -44,15 +42,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
 
         const isNewUser = Date.now() - dbUser.createdAt.getTime() < 10_000
-        console.log("[signIn] isNewUser:", isNewUser, "webhookUrl:", process.env.N8N_WEBHOOK_URL ?? "not set")
         if (isNewUser && process.env.N8N_WEBHOOK_URL) {
           fetch(process.env.N8N_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: user.email, name: user.name }),
-          })
-            .then((r) => console.log("[signIn] N8N webhook response:", r.status))
-            .catch((e) => console.error("[signIn] N8N webhook error:", e))
+          }).catch(() => {})
         }
 
         await prisma.inbox.upsert({
