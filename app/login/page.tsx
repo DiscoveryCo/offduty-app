@@ -17,8 +17,11 @@ export default async function LoginPage({
 
   const session = await auth()
   if (session?.user?.email) {
-    const user = await prisma.user.findUnique({ where: { email: session.user.email }, select: { id: true } })
-    if (user) redirect(callbackUrl)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: { inboxes: { select: { id: true }, take: 1 } },
+    })
+    if (user && user.inboxes.length > 0) redirect(callbackUrl)
   }
 
   return (
