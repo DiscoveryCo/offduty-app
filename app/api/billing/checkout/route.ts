@@ -39,18 +39,25 @@ export async function POST(req: NextRequest) {
 
   const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    customer: customerId,
-    mode: "subscription",
-    line_items: [{ price: priceId, quantity: quantity ?? 1 }],
-    success_url: `${baseUrl}/billing?success=1`,
-    cancel_url: `${baseUrl}/billing?canceled=1`,
-    allow_promotion_codes: true,
-    payment_method_collection: "if_required",
-    subscription_data: {
-      metadata: { userId: user.id },
-    },
-  })
+  let checkoutSession
+  try {
+    checkoutSession = await stripe.checkout.sessions.create({
+      customer: customerId,
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: quantity ?? 1 }],
+      success_url: `${baseUrl}/billing?success=1`,
+      cancel_url: `${baseUrl}/billing?canceled=1`,
+      allow_promotion_codes: true,
+      payment_method_collection: "if_required",
+      subscription_data: {
+        metadata: { userId: user.id },
+      },
+    })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Stripe error"
+    console.error("[checkout] stripe.checkout.sessions.create failed:", msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 
   return NextResponse.json({ url: checkoutSession.url })
 }

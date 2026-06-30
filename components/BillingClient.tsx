@@ -68,9 +68,15 @@ export function BillingClient({
       .then((res) => res.json())
       .then((data) => {
         if (data.url) window.location.href = data.url
-        else setLoading(null)
+        else {
+          toast.error(data.error ?? "Could not start checkout. Please try again.")
+          setLoading(null)
+        }
       })
-      .catch(() => setLoading(null))
+      .catch(() => {
+        toast.error("Could not start checkout. Please try again.")
+        setLoading(null)
+      })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleChoosePlan() {
