@@ -13,7 +13,7 @@ import { UserMenu } from "@/components/UserMenu"
 export default async function BillingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string; canceled?: string }>
+  searchParams: Promise<{ success?: string; canceled?: string; checkout?: string }>
 }) {
   const session = await auth()
   if (!session?.user?.email) redirect("/login")
@@ -29,6 +29,7 @@ export default async function BillingPage({
   const params = await searchParams
   const showSuccess = params.success === "1"
   const showCanceled = params.canceled === "1"
+  const autoCheckout = params.checkout === "annual" ? "annual" : params.checkout === "monthly" ? "monthly" : null
 
   const status = user.subscriptionStatus ?? "trialing"
   const isTrialing = status === "trialing"
@@ -170,6 +171,7 @@ export default async function BillingPage({
           annualPriceId={process.env.STRIPE_PRICE_ANNUAL!}
           subDetails={subDetails}
           inboxCount={user.inboxes.length}
+          autoCheckout={autoCheckout}
         />
       </main>
 

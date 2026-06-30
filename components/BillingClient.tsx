@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Check, Star, CreditCard, RefreshCw, ExternalLink } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
@@ -37,6 +37,7 @@ interface Props {
   annualPriceId: string
   subDetails: SubDetails | null
   inboxCount: number
+  autoCheckout?: "monthly" | "annual" | null
 }
 
 export function BillingClient({
@@ -46,11 +47,31 @@ export function BillingClient({
   annualPriceId,
   subDetails,
   inboxCount,
+  autoCheckout,
 }: Props) {
-  const [billing, setBilling] = useState<"monthly" | "annual">("monthly")
+  const [billing, setBilling] = useState<"monthly" | "annual">(autoCheckout ?? "monthly")
   const [loading, setLoading] = useState<null | "checkout" | "updateCard" | "invoices" | "adjustPlan" | "cancel" | "resume">(null)
   const [confirming, setConfirming] = useState(false)
   const router = useRouter()
+  const didAutoCheckout = useRef(false)
+
+  useEffect(() => {
+    if (!autoCheckout || hasActiveSubscription || didAutoCheckout.current) return
+    didAutoCheckout.current = true
+    const priceId = autoCheckout === "monthly" ? monthlyPriceId : annualPriceId
+    setLoading("checkout")
+    fetch("/api/billing/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ priceId, quantity: inboxCount }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.url) window.location.href = data.url
+        else setLoading(null)
+      })
+      .catch(() => setLoading(null))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleChoosePlan() {
     setLoading("checkout")
