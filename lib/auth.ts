@@ -53,6 +53,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         await prisma.inbox.upsert({
           where: { email: user.email },
           update: {
+            userId: dbUser.id,
             name: user.name,
             image: user.image,
             googleId: account?.providerAccountId,
