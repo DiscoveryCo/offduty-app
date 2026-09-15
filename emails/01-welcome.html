@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You're all set</title>
+<style>
+  /* Most clients that matter (Gmail, Apple Mail, iOS) honour these.
+     Clients that ignore them still get the 600px desktop layout. */
+  @media only screen and (max-width: 620px) {
+    .od-pad { padding-left: 24px !important; padding-right: 24px !important; }
+    .od-inner { padding-left: 18px !important; padding-right: 18px !important; }
+    .od-btn { display: block !important; text-align: center !important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background-color:#F7F7F8;">
+
+<!-- preheader: shown in inbox preview, hidden in body -->
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
+  Your inbox, on your schedule. Here's how to set it up.
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F7F7F8;">
+  <tr>
+    <td align="center" style="padding:32px 16px;">
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; max-width:600px; background-color:#ffffff; border:1px solid #E5E7EB; border-radius:16px;">
+
+        <!-- header -->
+        <tr>
+          <td class="od-pad" style="padding:32px 40px 8px 40px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td valign="middle" style="padding-right:12px; line-height:0;">
+                  <!-- PNG, not the site's SVG: most clients strip SVG. 120px source shown at 36px for retina. -->
+                  <img src="https://offduty.me/favicon.png" width="36" height="36" alt=""
+                       style="display:block; width:36px; height:36px; border:0; outline:none; text-decoration:none; border-radius:9px;">
+                </td>
+                <!-- Matches the live lockup: Helvetica 700, letter-spacing normal, and a
+                     1.5x mark-to-text ratio, which is where 3 of the 4 lockups on
+                     offduty.me sit (the 1.33x hero is the display-size outlier). -->
+                <td valign="middle" style="font-family:Helvetica,Arial,sans-serif; font-size:24px; font-weight:700; color:#161616; line-height:28px;">
+                  offduty
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- body -->
+        <tr>
+          <td class="od-pad" style="padding:16px 40px 8px 40px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:16px; line-height:26px; color:#161616;">
+
+            <p style="margin:0 0 20px 0;">Hi {$name},</p>
+
+            <p style="margin:0 0 20px 0;">offduty is now connected to your Gmail. Once activated, new email gets held quietly and delivered at the times you chose, instead of landing the second it's sent.</p>
+
+            <p style="margin:0 0 12px 0;">Three things worth doing in the first few days:</p>
+
+          </td>
+        </tr>
+
+        <!-- bullets -->
+        <tr>
+          <td class="od-pad" style="padding:0 40px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F5F3FF; border-radius:12px;">
+              <tr>
+                <td class="od-inner" style="padding:20px 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:15px; line-height:24px; color:#4D4D4D;">
+
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                      <td valign="top" width="18" style="padding:0 0 14px 0; color:#A78BFA; font-size:15px; line-height:24px;">&bull;</td>
+                      <td style="padding:0 0 14px 0;">Check your delivery times actually match your needs, everyone is different so customising helps.</td>
+                    </tr>
+                    <tr>
+                      <td valign="top" width="18" style="padding:0 0 14px 0; color:#A78BFA; font-size:15px; line-height:24px;">&bull;</td>
+                      <td style="padding:0 0 14px 0;">Add anyone who genuinely needs to reach you straight away as a VIP, so they skip the hold.</td>
+                    </tr>
+                    <tr>
+                      <td valign="top" width="18" style="color:#A78BFA; font-size:15px; line-height:24px;">&bull;</td>
+                      <td>Add VIP keywords to help with 2FA passwords. I use &ldquo;verify&rdquo;, &ldquo;otp&rdquo; and &ldquo;verification&rdquo;.</td>
+                    </tr>
+                  </table>
+
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- button -->
+        <tr>
+          <td align="left" class="od-pad" style="padding:28px 40px 4px 40px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="center" bgcolor="#A78BFA" style="border-radius:12px;">
+                  <a href="https://app.offduty.me/dashboard"
+                     style="display:inline-block; padding:14px 28px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:16px; font-weight:600; color:#ffffff; text-decoration:none; border-radius:12px;">
+                    Open offduty
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- closing -->
+        <tr>
+          <td class="od-pad" style="padding:24px 40px 36px 40px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:16px; line-height:26px; color:#161616;">
+            <p style="margin:0 0 20px 0;">offduty is yours for 30 days. I hope you find it as life-changing as I did. If you have any questions, reply to this and it comes to me.</p>
+            <p style="margin:0;">Fynn</p>
+          </td>
+        </tr>
+
+      </table>
+
+      <!-- footer -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; max-width:600px;">
+        <tr>
+          <td align="center" style="padding:24px 24px 8px 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:13px; line-height:20px; color:#8A8A8A;">
+            offduty is made by <a href="https://discoveryco.me" style="color:#8A8A8A; text-decoration:underline;">DiscoveryCo</a>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:0 24px 32px 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:13px; line-height:20px; color:#8A8A8A;">
+            <a href="{$unsubscribe}" style="color:#8A8A8A; text-decoration:underline;">Unsubscribe</a>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/db"
 import { getGmailClient, releaseEmails, stopWatch } from "@/lib/gmail"
+import { syncSubscriptionStatus } from "@/lib/mailerlite"
 import Stripe from "stripe"
 
 export const runtime = "nodejs"
@@ -61,14 +62,22 @@ async function handleSubscriptionChange(sub: Stripe.Subscription) {
     : status === "past_due" ? "past_due"
     : "canceled"
 
-  await prisma.user.updateMany({
+  // Need the email to mirror the status into MailerLite. stripeCustomerId is
+  // unique, so this matches at most one user, same as the previous updateMany.
+  const user = await prisma.user.findFirst({
     where: { stripeCustomerId: customerId },
+  })
+  if (!user) return
+
+  await prisma.user.update({
+    where: { id: user.id },
     data: {
       subscriptionStatus: mappedStatus,
       currentPeriodEnd,
     },
   })
 
+  await syncSubscriptionStatus(user.email, mappedStatus)
 }
 
 async function handlePaymentFailed(customerId: string) {
@@ -82,6 +91,8 @@ async function handlePaymentFailed(customerId: string) {
     where: { id: user.id },
     data: { subscriptionStatus: "past_due" },
   })
+
+  await syncSubscriptionStatus(user.email, "past_due")
 
   await Promise.allSettled(
     user.inboxes.map(async (inbox) => {
@@ -113,6 +124,8 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
     where: { id: user.id },
     data: { subscriptionStatus: "canceled" },
   })
+
+  await syncSubscriptionStatus(user.email, "canceled")
 
   await Promise.allSettled(
     user.inboxes.map(async (inbox) => {
