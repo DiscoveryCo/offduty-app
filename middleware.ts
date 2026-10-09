@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// sonner 2.0.7. See the style-src comment below for what these are and how to
+// regenerate them.
+const SONNER_STYLE_HASHES = [
+  "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+  "sha256-CIxDM5jnsGiKqXs2v7NKCY5MzdR9gu6TtiMJrDw29AY=",
+]
+
 export function middleware(request: NextRequest) {
   // Generate a unique nonce for this request. Next.js reads the x-nonce
   // request header during SSR and applies it to its own generated inline
@@ -15,7 +22,16 @@ export function middleware(request: NextRequest) {
     // 'self' + accounts.google.com are kept as fallbacks for older browsers
     // that don't support strict-dynamic.
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`,
-    "style-src 'self'",
+    // Stylesheets are same-origin only. The two hashes are sonner's, which
+    // injects its CSS into a <style> element at import time and has no nonce
+    // option: first an empty element (the hash of the empty string), then the
+    // CSS text node. app/layout.tsx imports sonner/dist/styles.css, so the
+    // toast styles do not depend on these hashes; they only keep the blocked
+    // injection from logging a CSP violation on every page load. A sonner
+    // upgrade changes the second hash and the warning comes back, harmlessly.
+    // Regenerate with:
+    //   node -e "const s=require('fs').readFileSync('node_modules/sonner/dist/index.mjs','utf8');const i=s.indexOf('__insertCSS(\"')+12;let j=i+1;while(s[j]!=='\"'){j+=s[j]==='\\\\'?2:1}console.log(require('crypto').createHash('sha256').update(JSON.parse(s.slice(i,j+1))).digest('base64'))"
+    `style-src 'self' ${SONNER_STYLE_HASHES.map((h) => `'${h}'`).join(" ")}`,
     "img-src 'self' data: https://lh3.googleusercontent.com",
     "font-src 'self'",
     "frame-src https://accounts.google.com",
