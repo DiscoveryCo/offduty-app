@@ -11,8 +11,12 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   async rewrites() {
     return [
-      { source: "/ingest/static/:path*", destination: "https://eu-assets.i.posthog.com/static/:path*" },
-      { source: "/ingest/array/:path*", destination: "https://eu-assets.i.posthog.com/array/:path*" },
+      // Assets go through eu.i.posthog.com, not the eu-assets.i.posthog.com
+      // host PostHog's docs suggest. Proxying to eu-assets from Railway's
+      // lhr1 edge returns Cloudflare error 1000 ("DNS points to prohibited
+      // IP"), so recorder.js 403s and session replay never starts, while
+      // ingestion keeps working. eu.i.posthog.com serves the same
+      // /static and /array paths and proxies fine.
       { source: "/ingest/:path*", destination: "https://eu.i.posthog.com/:path*" },
     ]
   },
