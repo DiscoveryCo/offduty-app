@@ -70,7 +70,7 @@ async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string
           </Link>
           <Link href={dashboardHref} className="flex items-center gap-2 hover:opacity-75 transition-opacity">
             <img src="/offduty-icon.svg" alt="" className="h-7 w-7" />
-            <span className="hidden sm:inline font-bold text-lg text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
+            <span className="hidden sm:inline font-bold text-lg text-[#161616] wordmark">offduty</span>
           </Link>
         </div>
         <div className="flex justify-center">
@@ -146,7 +146,7 @@ async function SettingsContent({ tab, inboxId }: { tab: string; inboxId?: string
       <footer className="border-t border-[#E5E7EB] py-6 px-6 flex items-center justify-between mt-10">
         <div className="flex items-center gap-2">
           <img src="/offduty-icon.svg" alt="" className="w-5 h-5" />
-          <span className="text-sm font-bold text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
+          <span className="text-sm font-bold text-[#161616] wordmark">offduty</span>
         </div>
         <div className="flex items-center gap-4 text-xs text-[#9CA3AF]">
           <span>© {new Date().getFullYear()} DiscoveryCo</span>

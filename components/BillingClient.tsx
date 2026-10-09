@@ -200,7 +200,15 @@ export function BillingClient({
                 offduty — {intervalLabel}
               </p>
               {subDetails && (
-                <p className="text-sm mt-1" style={{ color: subDetails.cancelAtPeriodEnd ? "#d97706" : subDetails.switchingTo ? "#6B7280" : "#4D4D4D" }}>
+                <p
+                  className={`text-sm mt-1 ${
+                    subDetails.cancelAtPeriodEnd
+                      ? "text-[#d97706]"
+                      : subDetails.switchingTo
+                        ? "text-[#6B7280]"
+                        : "text-[#4D4D4D]"
+                  }`}
+                >
                   {subDetails.cancelAtPeriodEnd
                     ? `Expires ${subDetails.periodEnd}`
                     : subDetails.switchingTo

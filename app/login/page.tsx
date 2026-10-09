@@ -29,7 +29,7 @@ export default async function LoginPage({
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-10 flex flex-col items-center gap-8 w-full max-w-sm shadow-sm">
         <div className="flex items-center gap-2.5">
           <img src="/offduty-icon.svg" alt="" className="h-10 w-10" />
-          <span className="font-bold text-2xl text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
+          <span className="font-bold text-2xl text-[#161616] wordmark">offduty</span>
         </div>
         <p className="text-[#4D4D4D] text-sm text-center leading-relaxed">
           Batch your Gmail inbox on your schedule.

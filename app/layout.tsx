@@ -2,6 +2,13 @@ import type { Metadata } from "next"
 import { Geist } from "next/font/google"
 import { headers } from "next/headers"
 import "./globals.css"
+// sonner ships its CSS twice: as this stylesheet, and as a string it injects
+// into a <style> element at import time. The CSP sets style-src 'self', which
+// blocks the injected one, so without this import every toast renders
+// unstyled. Importing it means the styles arrive as a same-origin stylesheet
+// instead. The injection still happens and is still blocked, which is
+// harmless but does log a CSP violation on every page load.
+import "sonner/dist/styles.css"
 import { Toaster } from "sonner"
 
 const geist = Geist({

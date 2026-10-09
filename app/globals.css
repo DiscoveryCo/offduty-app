@@ -141,3 +141,12 @@
   pointer-events: none;
   animation: onboarding-confetti var(--dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
+
+/* The wordmark is set in Helvetica rather than the Geist body font.
+   It is a class and not a style attribute because the CSP sets
+   style-src 'self': the browser refuses to apply style attributes in
+   server-rendered HTML, and React does not re-apply them on hydration,
+   so an inline font-family here would silently never take effect. */
+.wordmark {
+  font-family: Helvetica, Arial, sans-serif;
+}

@@ -122,7 +122,7 @@ export default async function BillingPage({
         </Link>
         <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-75 transition-opacity">
           <img src="/offduty-icon.svg" alt="" className="h-7 w-7" />
-          <span className="font-bold text-lg text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
+          <span className="font-bold text-lg text-[#161616] wordmark">offduty</span>
         </Link>
         <div className="ml-auto">
           <UserMenu email={user.email} image={user.image ?? null} settingsHref="/settings" />
@@ -178,7 +178,7 @@ export default async function BillingPage({
       <footer className="border-t border-[#E5E7EB] py-6 px-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img src="/offduty-icon.svg" alt="" className="w-5 h-5" />
-          <span className="text-sm font-bold text-[#161616]" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>offduty</span>
+          <span className="text-sm font-bold text-[#161616] wordmark">offduty</span>
         </div>
         <div className="flex items-center gap-4 text-xs text-[#9CA3AF]">
           <span>© {new Date().getFullYear()} DiscoveryCo</span>
