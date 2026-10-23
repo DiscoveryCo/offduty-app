@@ -1,0 +1,6 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "deploy": {
+    "startCommand": "sh -c 'npx prisma db push && NODE_ENV=production exec node --max-old-space-size=384 --import tsx server.ts'"
+  }
+}

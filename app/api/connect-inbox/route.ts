@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
-import { google } from "googleapis"
+import { OAuth2Client } from "google-auth-library"
 import { cookies } from "next/headers"
 import crypto from "crypto"
 
@@ -21,7 +21,7 @@ export async function GET() {
     path: "/",
   })
 
-  const oauth2 = new google.auth.OAuth2(
+  const oauth2 = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     `${process.env.NEXTAUTH_URL}/api/connect-inbox/callback`

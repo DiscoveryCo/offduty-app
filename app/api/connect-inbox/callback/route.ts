@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { google } from "googleapis"
+import { OAuth2Client } from "google-auth-library"
+import { oauth2 as googleOAuth2 } from "@googleapis/oauth2"
 import { cookies } from "next/headers"
 import { getGmailClient, ensureHoldLabel } from "@/lib/gmail"
 import { stripe } from "@/lib/stripe"
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard?error=inbox_connect_failed", process.env.NEXTAUTH_URL!))
   }
 
-  const oauth2 = new google.auth.OAuth2(
+  const oauth2 = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     `${process.env.NEXTAUTH_URL}/api/connect-inbox/callback`
@@ -39,7 +40,7 @@ export async function GET(req: NextRequest) {
     const { tokens } = await oauth2.getToken(code)
     oauth2.setCredentials(tokens)
 
-    const oauth2Api = google.oauth2({ version: "v2", auth: oauth2 })
+    const oauth2Api = googleOAuth2({ version: "v2", auth: oauth2 })
     const { data: profile } = await oauth2Api.userinfo.get()
 
     if (!profile.email) {

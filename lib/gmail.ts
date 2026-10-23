@@ -1,4 +1,5 @@
-import { google } from "googleapis"
+import { gmail as gmailApi, type gmail_v1 } from "@googleapis/gmail"
+import { OAuth2Client } from "google-auth-library"
 import { prisma } from "@/lib/db"
 import type { Inbox, VipRule } from "@/lib/generated/prisma/client"
 import { decryptToken, encryptToken } from "@/lib/crypto"
@@ -6,7 +7,7 @@ import { decryptToken, encryptToken } from "@/lib/crypto"
 const HOLD_LABEL_NAME = "Offduty-Hold"
 const LEGACY_HOLD_LABEL_NAME = "DiscoveryMail-Hold"
 
-const oauthClientCache = new Map<string, InstanceType<typeof google.auth.OAuth2>>()
+const oauthClientCache = new Map<string, OAuth2Client>()
 
 function getOAuth2Client(inbox: Inbox) {
   const accessToken = inbox.accessToken ? decryptToken(inbox.accessToken) : null
@@ -22,7 +23,7 @@ function getOAuth2Client(inbox: Inbox) {
     return cached
   }
 
-  const oauth2 = new google.auth.OAuth2(
+  const oauth2 = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
@@ -51,11 +52,11 @@ function getOAuth2Client(inbox: Inbox) {
 
 export async function getGmailClient(inbox: Inbox) {
   const oauth2 = getOAuth2Client(inbox)
-  return google.gmail({ version: "v1", auth: oauth2 })
+  return gmailApi({ version: "v1", auth: oauth2 })
 }
 
 export async function ensureHoldLabel(
-  gmail: ReturnType<typeof google.gmail>,
+  gmail: gmail_v1.Gmail,
   inboxId: string
 ): Promise<string> {
   const existing = await prisma.inbox.findUnique({
@@ -97,7 +98,7 @@ export async function ensureHoldLabel(
 }
 
 export async function holdEmail(
-  gmail: ReturnType<typeof google.gmail>,
+  gmail: gmail_v1.Gmail,
   messageId: string,
   holdLabelId: string
 ) {
@@ -112,7 +113,7 @@ export async function holdEmail(
 }
 
 export async function releaseEmails(
-  gmail: ReturnType<typeof google.gmail>,
+  gmail: gmail_v1.Gmail,
   holdLabelId: string
 ): Promise<number> {
   let total = 0
@@ -165,7 +166,7 @@ export function isVip(
 }
 
 export async function registerWatch(
-  gmail: ReturnType<typeof google.gmail>,
+  gmail: gmail_v1.Gmail,
   inboxId: string
 ) {
   const topic = process.env.GOOGLE_PUBSUB_TOPIC
@@ -189,7 +190,7 @@ export async function registerWatch(
   })
 }
 
-export async function stopWatch(gmail: ReturnType<typeof google.gmail>) {
+export async function stopWatch(gmail: gmail_v1.Gmail) {
   await gmail.users.stop({ userId: "me" }).catch(() => {})
 }
 
@@ -205,7 +206,7 @@ export async function revokeAccess(inbox: Inbox) {
 }
 
 export async function getHeldCount(
-  gmail: ReturnType<typeof google.gmail>,
+  gmail: gmail_v1.Gmail,
   holdLabelId: string
 ): Promise<number> {
   let total = 0
