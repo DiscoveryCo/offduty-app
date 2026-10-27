@@ -8,7 +8,7 @@ import { OnboardingModal } from "@/components/OnboardingModal"
 import { PostHogIdentify } from "@/components/PostHogIdentify"
 import { UserMenu } from "@/components/UserMenu"
 import { InboxSwitcher } from "@/components/InboxSwitcher"
-import { InboxTabs, type InboxTab } from "@/components/InboxTabs"
+import { InboxNav, type InboxSummary } from "@/components/InboxNav"
 import { getGmailClient, getHeldCount } from "@/lib/gmail"
 import type { Inbox } from "@/lib/generated/prisma/client"
 import { ActivityPagination } from "@/components/ActivityPagination"
@@ -108,11 +108,11 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
     ? Math.max(0, Math.ceil((new Date(user.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : null
 
-  // With two or more inboxes the dashboard shows every inbox's held count in a
-  // tab bar, so read them all at once, in parallel. One user's slow or failing
+  // With two or more inboxes the header shows every inbox's held count, so
+  // read them all at once, in parallel. One user's slow or failing
   // inbox shows no count rather than holding up the page.
   const hasMultipleInboxes = user.inboxes.length > 1
-  let inboxTabs: InboxTab[] = []
+  let inboxSummaries: InboxSummary[] = []
   let heldCount = 0
   if (hasMultipleInboxes) {
     const allInboxes = await prisma.inbox.findMany({ where: { userId: user.id } })
@@ -120,7 +120,7 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
     const byId = new Map(allInboxes.map((inbox, i) => [inbox.id, { inbox, held: counts[i] }]))
     // Keep the header's ordering (primary first), and pass the client only
     // display fields: the full rows carry encrypted OAuth tokens.
-    inboxTabs = user.inboxes.flatMap(({ id, email, image }) => {
+    inboxSummaries = user.inboxes.flatMap(({ id, email, image }) => {
       const entry = byId.get(id)
       if (!entry) return []
       return [{
@@ -141,25 +141,27 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {(fullInbox.isActive || inboxTabs.some((i) => i.isActive)) && <AutoRefresh intervalMs={30000} />}
+      {(fullInbox.isActive || inboxSummaries.some((i) => i.isActive)) && <AutoRefresh intervalMs={30000} />}
       <PostHogIdentify email={user.email} subscriptionStatus={user.subscriptionStatus} trialEndsAt={user.trialEndsAt} />
       {!hasOnboarded && <OnboardingModal inboxId={fullInbox.id} />}
       {/* Header */}
-      <header className="bg-white border-b border-[#E5E7EB] px-6 py-3 grid grid-cols-3 items-center">
+      {/* Side columns share the leftover width equally so the centre stays centred */}
+      <header className="bg-white border-b border-[#E5E7EB] px-6 py-3 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4 items-center">
         <div className="flex items-center gap-2">
           <img src="/offduty-icon.svg" alt="" className="h-7 w-7" />
           <span className="hidden sm:inline font-bold text-lg text-[#161616] wordmark">offduty</span>
         </div>
-        <div className="flex justify-center">
-          {/* With several inboxes the tab bar below replaces the switcher */}
-          {!hasMultipleInboxes && <InboxSwitcher inboxes={user.inboxes} currentInboxId={fullInbox.id} />}
-        </div>
+        {hasMultipleInboxes ? (
+          <InboxNav inboxes={inboxSummaries} currentInboxId={fullInbox.id} />
+        ) : (
+          <div className="flex justify-center">
+            <InboxSwitcher inboxes={user.inboxes} currentInboxId={fullInbox.id} />
+          </div>
+        )}
         <div className="flex justify-end">
           <UserMenu email={user.email} image={user.image ?? null} settingsHref={settingsHref} dashboardHref={`/dashboard?inbox=${fullInbox.id}`} />
         </div>
       </header>
-
-      {hasMultipleInboxes && <InboxTabs inboxes={inboxTabs} currentInboxId={fullInbox.id} />}
 
       {/* Trial banner — full width, between header and main */}
       {trialDaysLeft !== null && (
