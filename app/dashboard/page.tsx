@@ -8,7 +8,9 @@ import { OnboardingModal } from "@/components/OnboardingModal"
 import { PostHogIdentify } from "@/components/PostHogIdentify"
 import { UserMenu } from "@/components/UserMenu"
 import { InboxSwitcher } from "@/components/InboxSwitcher"
+import { InboxTabs, type InboxTab } from "@/components/InboxTabs"
 import { getGmailClient, getHeldCount } from "@/lib/gmail"
+import type { Inbox } from "@/lib/generated/prisma/client"
 import { ActivityPagination } from "@/components/ActivityPagination"
 import { HeldEmailsCard } from "@/components/HeldEmailsCard"
 import { AutoRefresh } from "@/components/AutoRefresh"
@@ -26,6 +28,18 @@ function scheduleLabel(settings: { scheduleType: string; intervalHours?: number 
   if (settings.scheduleType === "custom_daily") return "a custom daily schedule"
   if (settings.scheduleType === "custom_weekly") return "a custom weekly schedule"
   return "a custom schedule"
+}
+
+// null when there is nothing to count (inbox off) or Gmail could not be reached,
+// so the UI shows no number rather than a misleading 0.
+async function readHeldCount(inbox: Inbox): Promise<number | null> {
+  if (!inbox.isActive || !inbox.holdLabelId) return null
+  try {
+    const gmail = await getGmailClient(inbox)
+    return await getHeldCount(gmail, inbox.holdLabelId)
+  } catch {
+    return null
+  }
 }
 
 function formatDate(date: Date) {
@@ -94,21 +108,40 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
     ? Math.max(0, Math.ceil((new Date(user.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : null
 
+  // With two or more inboxes the dashboard shows every inbox's held count in a
+  // tab bar, so read them all at once, in parallel. One user's slow or failing
+  // inbox shows no count rather than holding up the page.
+  const hasMultipleInboxes = user.inboxes.length > 1
+  let inboxTabs: InboxTab[] = []
   let heldCount = 0
-  if (fullInbox.isActive && fullInbox.holdLabelId) {
-    try {
-      const gmail = await getGmailClient(fullInbox)
-      heldCount = await getHeldCount(gmail, fullInbox.holdLabelId)
-    } catch {
-      // non-fatal
-    }
+  if (hasMultipleInboxes) {
+    const allInboxes = await prisma.inbox.findMany({ where: { userId: user.id } })
+    const counts = await Promise.all(allInboxes.map(readHeldCount))
+    const byId = new Map(allInboxes.map((inbox, i) => [inbox.id, { inbox, held: counts[i] }]))
+    // Keep the header's ordering (primary first), and pass the client only
+    // display fields: the full rows carry encrypted OAuth tokens.
+    inboxTabs = user.inboxes.flatMap(({ id, email, image }) => {
+      const entry = byId.get(id)
+      if (!entry) return []
+      return [{
+        id,
+        email,
+        image,
+        isActive: entry.inbox.isActive,
+        pausedUntil: entry.inbox.pausedUntil?.toISOString() ?? null,
+        heldCount: entry.held,
+      }]
+    })
+    heldCount = byId.get(fullInbox.id)?.held ?? 0
+  } else {
+    heldCount = (await readHeldCount(fullInbox)) ?? 0
   }
 
   const settingsHref = `/settings?inbox=${fullInbox.id}`
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {fullInbox.isActive && <AutoRefresh intervalMs={30000} />}
+      {(fullInbox.isActive || inboxTabs.some((i) => i.isActive)) && <AutoRefresh intervalMs={30000} />}
       <PostHogIdentify email={user.email} subscriptionStatus={user.subscriptionStatus} trialEndsAt={user.trialEndsAt} />
       {!hasOnboarded && <OnboardingModal inboxId={fullInbox.id} />}
       {/* Header */}
@@ -118,12 +151,15 @@ async function DashboardContent({ page, inboxId }: { page: number; inboxId?: str
           <span className="hidden sm:inline font-bold text-lg text-[#161616] wordmark">offduty</span>
         </div>
         <div className="flex justify-center">
-          <InboxSwitcher inboxes={user.inboxes} currentInboxId={fullInbox.id} />
+          {/* With several inboxes the tab bar below replaces the switcher */}
+          {!hasMultipleInboxes && <InboxSwitcher inboxes={user.inboxes} currentInboxId={fullInbox.id} />}
         </div>
         <div className="flex justify-end">
           <UserMenu email={user.email} image={user.image ?? null} settingsHref={settingsHref} dashboardHref={`/dashboard?inbox=${fullInbox.id}`} />
         </div>
       </header>
+
+      {hasMultipleInboxes && <InboxTabs inboxes={inboxTabs} currentInboxId={fullInbox.id} />}
 
       {/* Trial banner — full width, between header and main */}
       {trialDaysLeft !== null && (
